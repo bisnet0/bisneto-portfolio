@@ -3,11 +3,11 @@ import { yellow, grey } from '@mui/material/colors';
 
 let theme = createTheme({
   palette: {
-    primary: {
-        main: yellow[500],
+      primary: {
+        main: grey[900],
     },
     secondary: {
-        main: grey[500],
+        main: yellow[500],
     },
   },
   typography: {

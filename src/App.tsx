@@ -1,9 +1,11 @@
+import Home from "./pages/Home/Home"
+
 const App = () =>{
 
   
   return (
     <>
-      <h1>hello</h1>
+      <Home />
     </>
   )
   
