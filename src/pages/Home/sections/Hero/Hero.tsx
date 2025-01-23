@@ -25,9 +25,11 @@ const Hero = () => {
     }))
 
     const StyledImg = styled("img")(({ theme }) => ({
-        width: "75%",
+        width: "100%",
+        maxWidth: "300px",
         borderRadius: "50%",
         border: `1px solid ${theme.palette.secondary.main}`,
+        objectFit: "cover",
 
     }))
     return (
@@ -35,7 +37,7 @@ const Hero = () => {
             <StyledHero>
                 <Container maxWidth={"lg"}>
                     <Grid container spacing={5}>
-                        <Grid item xs={12} md={7}>
+                        <Grid item xs={12} md={4}>
                             <Box position={"relative"}>
                                 <Box position={"absolute"} width={"150%"} top={-100} right={0}>
                                     <AnimatedBackground />
@@ -50,7 +52,7 @@ const Hero = () => {
                             <Typography color="primary.contrastText" variant="h2" textAlign={"center"} paddingBottom={2}>I'm a Software Developer</Typography>
                             <Grid container display={"flex"} justifyContent={"center"} spacing={2} paddingTop={3}>
                                 <Grid item xs={12} md={4} display={"flex"} justifyContent={"center"}>
-                                    <StyledButton>
+                                    <StyledButton onClick={()=> console.log("Download")}>
                                         <DownloadIcon />
                                         <Typography>
                                             Download CV
@@ -58,7 +60,7 @@ const Hero = () => {
                                     </StyledButton>
                                 </Grid>
                                 <Grid item xs={12} md={4} display={"flex"} justifyContent={"center"}>
-                                    <StyledButton>
+                                    <StyledButton onClick={()=> console.log("Contact")}>
                                         <EmailIcon />
                                         <Typography>
                                             Contact me
