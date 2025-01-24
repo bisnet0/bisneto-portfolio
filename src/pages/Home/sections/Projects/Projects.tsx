@@ -1,11 +1,25 @@
 import { Box, Container, Grid, styled, Typography, Button } from "@mui/material";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import SlideImages from "../../../../components/SlideImages/SlideImages";
+
+
 
 // Lista de projetos
 const projects = [
     {
         name: "Project 1",
         duration: "Jul 2023 - Dez 2023",
-        image: "../src/assets/images/projects/tutorial.png", // Imagem do projeto
+        images: [
+            "/projects/tutorial.png",
+            "/projects/tutorial2.png",
+            "/projects/tutorial3.png",
+            "/projects/tutorial4.png",
+            "/projects/tutorial5.png",
+            "/projects/tutorial6.png",
+            "/projects/tutorial7.png",
+            "/projects/tutorial8.png",
+        ], // Lista de imagens
         description: "This is a brief description of Project 1. It involves building a full-stack application with React and Node.js.",
         technologies: ["React", "Node.js", "MongoDB"],
         projectLink: "https://example.com/project1",
@@ -14,14 +28,17 @@ const projects = [
     {
         name: "Project 2",
         duration: "Jan 2023 - Mar 2023",
-        image: "path/to/image2.jpg", // Imagem do projeto
+        images: [
+            "../src/assets/images/projects/tutorial1.png",
+            "../src/assets/images/projects/profile.jpg",
+        ], // Lista de imagens
         description: "This project focuses on creating a mobile application using React Native for iOS and Android.",
         technologies: ["React Native", "Redux", "Firebase"],
         projectLink: "https://example.com/project2",
         codeLink: "https://github.com/example/project2"
     },
-    // Adicione mais projetos conforme necessário
 ];
+
 
 const Projects = () => {
 
@@ -61,9 +78,19 @@ const Projects = () => {
                                     {project.duration}
                                 </Typography>
 
-                                <Box mt={2}>
-                                    <img src={project.image} alt={project.name} style={{ width: "100%", maxWidth: "auto", height: "auto", objectFit: "cover", borderRadius: "8px" }} />
+                                <Box
+                                    mt={2}
+                                    style={{
+                                        width: "92%", // Garante que o slider ocupe toda a largura disponível
+                                        maxWidth: "500px", // Limita a largura máxima, ajuste conforme necessário
+                                        height: "300px", // Altura do slider, ajuste conforme o design
+                                        overflow: "hidden", // Evita que imagens maiores saiam do container
+                                    }}
+                                >
+                                    <SlideImages images={project.images} />
                                 </Box>
+
+
 
                                 <Typography variant="body1" color="text.primary" paragraph marginTop={2}>
                                     {project.description}
