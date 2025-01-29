@@ -25,7 +25,7 @@ const SlideImages: React.FC<SlideImagesProps> = ({ images }) => {
                         src={image}
                         alt={`Slide ${index + 1}`}
                         style={{
-                            width: "100%",
+                            width: "99%",
                             height: "auto",
                             objectFit: "cover", // Ajusta a imagem para cobrir o espaço do slide
                             borderRadius: "8px", // Apenas se desejar bordas arredondadas
