@@ -29,8 +29,30 @@ const projects = [
         name: "Project 2",
         duration: "Jan 2023 - Mar 2023",
         images: [
-            "../src/assets/images/projects/tutorial1.png",
-            "../src/assets/images/projects/profile.jpg",
+            "/projects/Projeto2.png",
+            "/projects/Projeto2_1.png",
+            "/projects/Projeto2_2.png",
+            "/projects/Projeto2_3.png",
+            "/projects/Projeto2_4.png",
+            "/projects/Projeto2_5.png",
+            "/projects/Projeto2_6.png",
+        ], // Lista de imagens
+        description: "This project focuses on creating a mobile application using React Native for iOS and Android.",
+        technologies: ["React Native", "Redux", "Firebase"],
+        projectLink: "https://example.com/project2",
+        codeLink: "https://github.com/example/project2"
+    },
+    {
+        name: "Project 3",
+        duration: "Jan 2023 - Mar 2023",
+        images: [
+            "/projects/Projeto3.png",
+            "/projects/Projeto3_1.png",
+            "/projects/Projeto3_2.png",
+            "/projects/Projeto3_3.png",
+            "/projects/Projeto3_4.png",
+            "/projects/Projeto3_5.png",
+            "/projects/Projeto3_6.png",
         ], // Lista de imagens
         description: "This project focuses on creating a mobile application using React Native for iOS and Android.",
         technologies: ["React Native", "Redux", "Firebase"],
