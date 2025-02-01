@@ -27,6 +27,10 @@ const CodeLinkButton: React.FC<CodeLinkButtonProps> = ({ codeLink }) => {
         return link.includes("github.com");
     };
 
+    const isEmptyLink = (link: string) => {
+        return link === "";
+    };
+
     if (Array.isArray(codeLink) && codeLink.length > 1) {
         return (
             <>
@@ -49,6 +53,14 @@ const CodeLinkButton: React.FC<CodeLinkButtonProps> = ({ codeLink }) => {
                             component="a"
                             href={item.url}
                             target="_blank"
+                        sx={{
+                            fontSize: "14px",
+                            "&:hover": {
+                                backgroundColor: "primary.main", 
+                                borderRadius: "3px",
+                                color: "white", 
+                            },
+                        }}
                         >
                             {item.name}
                         </MenuItem>
@@ -58,6 +70,10 @@ const CodeLinkButton: React.FC<CodeLinkButtonProps> = ({ codeLink }) => {
         );
     } else {
         const link = Array.isArray(codeLink) ? codeLink[0].url : codeLink;
+
+        if (isEmptyLink(link)) {
+            return null;
+        }
         const buttonText = isGitHubLink(link) ? "View Code" : "Visit Website";
 
         return (
