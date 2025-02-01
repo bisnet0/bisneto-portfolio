@@ -20,7 +20,8 @@ const StyledButton: React.FC<StyledButtonProps> = ({children, onClick}) => {
         gap: "10px",
         '&:hover' : {
             backgroundColor: theme.palette.secondary.main,
-            color: theme.palette.primary.main
+            color: theme.palette.primary.main,
+            cursor: "pointer"
         }
     }))
     return (
