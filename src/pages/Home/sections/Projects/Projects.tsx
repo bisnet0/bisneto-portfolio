@@ -49,7 +49,7 @@ const projects = [
             "/projects/Renovame7.png",
             "/projects/Renovame8.png",
         ], // Lista de imagens
-        description: "This project was focused on '_pro bono publico_', creating a fully responsive website for a new church called Renova-me Church.",
+        description: "This project was focused on 'pro bono publico', creating a fully responsive website for a new church called Renova-me Church.",
         technologies: ["JavaScript", "HTML5", "CSS3"],
         projectLink: "https://renovamechurch.com.br/",
         codeLink: "https://github.com/bisnet0/renova-me"
