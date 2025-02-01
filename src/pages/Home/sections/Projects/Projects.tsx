@@ -49,7 +49,7 @@ const projects = [
             "/projects/Renovame7.png",
             "/projects/Renovame8.png",
         ], // Lista de imagens
-        description: "This project was focused on 'pro bono publico', creating a fully responsive website for a new church called Renova-me Church.",
+        description: "This project was focused on '_pro bono publico_', creating a fully responsive website for a new church called Renova-me Church.",
         technologies: ["JavaScript", "HTML5", "CSS3"],
         projectLink: "https://renovamechurch.com.br/",
         codeLink: "https://github.com/bisnet0/renova-me"
@@ -72,9 +72,12 @@ const projects = [
             "/projects/Biometria11.png",
         ], // Lista de imagens
         description: "This project was developed to address the turnstile access issue at the two institutions of Grupo Nobre. It involved sending students and employees photos to authorize their entry.",
-        technologies: ["Python", "Node.js", "SQL Server","JavaScript", "HTML5", "CSS3"],
+        technologies: ["Python", "Node.js", "SQL Server", "JavaScript", "HTML5", "CSS3"],
         projectLink: "https://www.linkedin.com/posts/bisnet0_frontend-webdeb-javascript-activity-7227072365472448514-m9m7?utm_source=share&utm_medium=member_desktop",
-        codeLink: "https://biometria.unef.edu.br/",
+        codeLink: [
+            { name: "FACIAL BIO UNIFAN", url: "https://biometria.unifan.net.br/" },
+            { name: "FACIAL BIO UNEF", url: "https://biometria.unef.edu.br/" },
+        ]
     },
     {
         name: "Monthly Birthdays",
@@ -87,9 +90,9 @@ const projects = [
             "/projects/Aniversariantes4.png",
         ], // Lista de imagens
         description: "This project resulted in the creation of a Birthday Reminder for all Grupo Nobre employees. It displays all birthdays and includes a special celebration feature for the employee celebrating their birthday that day.",
-        technologies: ["JavaScript","Node.js", "SQL Server", "HTML5", "CSS3"],
+        technologies: ["JavaScript", "Node.js", "SQL Server", "HTML5", "CSS3"],
         projectLink: "https://www.linkedin.com/posts/bisnet0_webdev-desenvolvimentoweb-nodejs-activity-7220542341504245760-yEhG?utm_source=share&utm_medium=member_desktop",
-        codeLink: "https://github.com/bisnet0/funcionarios-app"
+        codeLink: ""
     },
     {
         name: "Polos Management",
@@ -135,8 +138,8 @@ const projects = [
             "/projects/APreditiva4.png",
         ], // Lista de imagens
         description: "This project focuses on creating a Predictive Analysis tool for Brazilian import and export taxes. It concentrates on data from the year range 2000 to 2024.",
-        technologies: ["Python", "Jupyter", "Pamdas","Scikit-learn", "Matplotlib", "Numpy"],
-        projectLink: "https://example.com/project2",
+        technologies: ["Python", "Jupyter", "Pamdas", "Scikit-learn", "Matplotlib", "Numpy"],
+        projectLink: "",
         codeLink: "https://github.com/bisnet0/DataScience"
     },
     {
@@ -150,11 +153,12 @@ const projects = [
             "/projects/Nobrehub4.png",
         ], // Lista de imagens
         description: "This project focuses on creating a centralized hub for all Nobre Group events (free and paid with Mercado Pago API). It is designed to manage event information and generate certificates for participants.",
-        technologies: ["JavaScript", "MercadoPago API", "Python","Node.js"],
+        technologies: ["JavaScript", "MercadoPago API", "Python", "Node.js"],
         projectLink: "https://www.linkedin.com/posts/bisnet0_development-system-backend-activity-7264752938651185152-9vcq?utm_source=share&utm_medium=member_desktop",
-        codeLink: "https://github.com/bisnet0/DataScience"
+        codeLink: ""
     },
 ];
+
 
 
 const Projects = () => {
@@ -220,9 +224,16 @@ const Projects = () => {
                                 <Box mt={3}>
                                     <Grid container spacing={2} justifyContent="center">
                                         <Grid item>
-                                            <Button variant="contained" color="primary" href={project.projectLink} target="_blank">
-                                                View Project
-                                            </Button>
+                                            {project.projectLink && (
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    href={project.projectLink}
+                                                    target="_blank"
+                                                >
+                                                    {project.projectLink.includes("linkedin.com") ? "View Project" : "Visit Website"}
+                                                </Button>
+                                            )}
                                         </Grid>
                                         <Grid item>
                                             <CodeLinkButton codeLink={project.codeLink} />
