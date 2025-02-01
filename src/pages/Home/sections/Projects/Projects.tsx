@@ -182,7 +182,7 @@ const Projects = () => {
     }));
 
     return (
-        <StyledProjects>
+        <StyledProjects id="projects">
             <Container maxWidth="lg">
                 <Typography variant="h1" align="center" gutterBottom color="primary.contrastText">
                     Projects

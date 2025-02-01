@@ -44,7 +44,7 @@ const About = () => {
     
 
     return (
-        <StyledAbout>
+        <StyledAbout id="about">
             <Container maxWidth="lg">
                 <Typography variant="h1" align="center" gutterBottom color="primary.main">
                     About

@@ -30,7 +30,7 @@ const Skills = () => {
     ];
 
     return (
-        <StyledSkills>
+        <StyledSkills id="skills">
             <Container maxWidth="lg">
                 <Typography variant="h1" align="center" gutterBottom color="primary.main">
                     Skills
