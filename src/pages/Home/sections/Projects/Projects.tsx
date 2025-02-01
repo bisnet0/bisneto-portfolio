@@ -59,6 +59,68 @@ const projects = [
         projectLink: "https://example.com/project2",
         codeLink: "https://github.com/example/project2"
     },
+    {
+        name: "Project 4",
+        duration: "Jan 2023 - Mar 2023",
+        images: [
+            "/projects/Aniversariantes.png",
+            "/projects/Aniversariantes1.png",
+            "/projects/Aniversariantes2.png",
+            "/projects/Aniversariantes3.png",
+            "/projects/Aniversariantes4.png",
+        ], // Lista de imagens
+        description: "This project focuses on creating a mobile application using React Native for iOS and Android.",
+        technologies: ["React Native", "Redux", "Firebase"],
+        projectLink: "https://example.com/project2",
+        codeLink: "https://github.com/example/project2"
+    },
+    {
+        name: "Project 5",
+        duration: "Jan 2023 - Mar 2023",
+        images: [
+            "/projects/1_polo.png",
+            "/projects/2_polo.png",
+            "/projects/3_polo.png",
+            "/projects/polo.png",
+            "/projects/polo2.png",
+            "/projects/polo3.png",
+            "/projects/polo4.png",
+            "/projects/polo5.png",
+            "/projects/polo6.png",
+        ], // Lista de imagens
+        description: "This project focuses on creating a mobile application using React Native for iOS and Android.",
+        technologies: ["React Native", "Redux", "Firebase"],
+        projectLink: "https://example.com/project2",
+        codeLink: "https://github.com/example/project2"
+    },
+    {
+        name: "Project 6",
+        duration: "Jan 2023 - Mar 2023",
+        images: [
+            "/projects/replaceM.png",
+            "/projects/replaceM1.png",
+            "/projects/replaceM2.png",
+        ], // Lista de imagens
+        description: "This project focuses on creating a mobile application using React Native for iOS and Android.",
+        technologies: ["React Native", "Redux", "Firebase"],
+        projectLink: "https://example.com/project2",
+        codeLink: "https://github.com/example/project2"
+    },
+    {
+        name: "Project 7",
+        duration: "Jan 2023 - Mar 2023",
+        images: [
+            "/projects/APreditiva.png",
+            "/projects/APreditiva1.png",
+            "/projects/APreditiva2.png",
+            "/projects/APreditiva3.png",
+            "/projects/APreditiva4.png",
+        ], // Lista de imagens
+        description: "This project focuses on creating a mobile application using React Native for iOS and Android.",
+        technologies: ["React Native", "Redux", "Firebase"],
+        projectLink: "https://example.com/project2",
+        codeLink: "https://github.com/example/project2"
+    },
 ];
 
 
