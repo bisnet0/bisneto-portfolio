@@ -25,8 +25,8 @@ const Skills = () => {
     }));
 
     const skillsList = [
-        "JavaScript", "TypeScript", "React", "Node.js", "Express.js", "MongoDB",
-        "HTML", "CSS", "Git", "Docker", "Python", "GraphQL"
+        "TypeScript", "JavaScript", "React", "Node.js", "Express.js", "MongoDB",
+        "HTML", "CSS", "Git", "Docker", "Python", "RabbitMQ",
     ];
 
     return (
@@ -38,7 +38,7 @@ const Skills = () => {
 
                 <Grid container spacing={4}>
                     {skillsList.map((skill, index) => (
-                        <Grid item xs={12} sm={6} md={4} lg={2} key={index}>
+                        <Grid item xs={6} sm={6} md={4} lg={2} key={index}>
                             <SkillBox>
                                 <Typography variant="h6" color="primary.main">{skill}</Typography>
                                 {/* <Typography variant="body2" color="text.secondary" marginTop={1}>
