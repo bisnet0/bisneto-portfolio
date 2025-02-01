@@ -2,6 +2,7 @@ import { Box, Container, Grid, styled, Typography, Button } from "@mui/material"
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import SlideImages from "../../../../components/SlideImages/SlideImages";
+import CodeLinkButton from "./CodeLinkButton"; // Import the new component
 
 
 
@@ -26,7 +27,13 @@ const projects = [
         description: "Redesigning the UI/UX for Medicine Tutorials and Nobre School, ensuring a fully responsive experience across smartphones and tablets.",
         technologies: ["JavaScript", "HTML5", "CSS3"],
         projectLink: "https://www.linkedin.com/posts/bisnet0_frontend-js-css-activity-7247601763212513281-KuBA?utm_source=share&utm_medium=member_desktop",
-        codeLink: "https://med.unef.edu.br/tutorial-professor"
+        codeLink: [
+            { name: "UNIFAN MED", url: "https://med.unifan.net.br/tutorial-professor" },
+            { name: "UNEF MED", url: "https://med.unef.edu.br/tutorial-professor" },
+            { name: "UNIFAN", url: "https://unifan.net.br/tutorial" },
+            { name: "UNEF", url: "https://unef.edu.br/tutorial" },
+            { name: "COLÉGIO NOBRE", url: "https://colegionobre.com.br/tutorial" },
+        ]
     },
     {
         name: "Renova-me Church",
@@ -81,8 +88,8 @@ const projects = [
         ], // Lista de imagens
         description: "This project resulted in the creation of a Birthday Reminder for all Grupo Nobre employees. It displays all birthdays and includes a special celebration feature for the employee celebrating their birthday that day.",
         technologies: ["JavaScript","Node.js", "SQL Server", "HTML5", "CSS3"],
-        projectLink: "https://www.linkedin.com/posts/bisnet0_webdev-desenvolvimentoweb-nodejs-activity-7220542341504245760-yEhG?utm_source=share&utm_medium=member_desktop"
-        // codeLink: "https://github.com/bisnet0/funcionarios-app"
+        projectLink: "https://www.linkedin.com/posts/bisnet0_webdev-desenvolvimentoweb-nodejs-activity-7220542341504245760-yEhG?utm_source=share&utm_medium=member_desktop",
+        codeLink: "https://github.com/bisnet0/funcionarios-app"
     },
     {
         name: "Polos Management",
@@ -129,7 +136,7 @@ const projects = [
         ], // Lista de imagens
         description: "This project focuses on creating a Predictive Analysis tool for Brazilian import and export taxes. It concentrates on data from the year range 2000 to 2024.",
         technologies: ["Python", "Jupyter", "Pamdas","Scikit-learn", "Matplotlib", "Numpy"],
-        // projectLink: "https://example.com/project2",
+        projectLink: "https://example.com/project2",
         codeLink: "https://github.com/bisnet0/DataScience"
     },
     {
@@ -145,7 +152,7 @@ const projects = [
         description: "This project focuses on creating a centralized hub for all Nobre Group events (free and paid with Mercado Pago API). It is designed to manage event information and generate certificates for participants.",
         technologies: ["JavaScript", "MercadoPago API", "Python","Node.js"],
         projectLink: "https://www.linkedin.com/posts/bisnet0_development-system-backend-activity-7264752938651185152-9vcq?utm_source=share&utm_medium=member_desktop",
-        // codeLink: "https://github.com/bisnet0/DataScience"
+        codeLink: "https://github.com/bisnet0/DataScience"
     },
 ];
 
@@ -218,9 +225,7 @@ const Projects = () => {
                                             </Button>
                                         </Grid>
                                         <Grid item>
-                                            <Button variant="outlined" color="primary" href={project.codeLink} target="_blank">
-                                                View Code
-                                            </Button>
+                                            <CodeLinkButton codeLink={project.codeLink} />
                                         </Grid>
                                     </Grid>
                                 </Box>
