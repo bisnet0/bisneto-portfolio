@@ -32,6 +32,18 @@ const Hero = () => {
         objectFit: "cover",
 
     }))
+
+        const handleContactClick = () => {
+            const email = "your-email@gmail.com"; // Replace with your email
+            const subject = "CONTACT FROM YOUR PORTFOLIO"; // Custom subject
+            const body = "Hi, Henrique! I want to contact you!"; // Custom message
+    
+            // Construct the mailto link
+            const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+            // Open the default email client
+            window.location.href = mailtoLink;
+        };
     return (
         <>
             <StyledHero id="hero">
@@ -52,7 +64,7 @@ const Hero = () => {
                             <Typography color="primary.contrastText" variant="h2" textAlign={"center"} paddingBottom={2}>I'm a Software Developer</Typography>
                             <Grid container display={"flex"} justifyContent={"center"} spacing={2} paddingTop={3}>
                                 <Grid item xs={12} md={4} display={"flex"} justifyContent={"center"}>
-                                    <StyledButton onClick={()=> console.log("Download")}>
+                                    <StyledButton onClick={()=> window.open("https://drive.usercontent.google.com/download?id=1jAOuBD5NmBkF9Sye-MWPo-ao_j3pWUq9&export=download&authuser=0", "_blank")}>
                                         <DownloadIcon />
                                         <Typography>
                                             Download CV
@@ -60,7 +72,7 @@ const Hero = () => {
                                     </StyledButton>
                                 </Grid>
                                 <Grid item xs={12} md={4} display={"flex"} justifyContent={"center"}>
-                                    <StyledButton onClick={()=> console.log("Contact")}>
+                                    <StyledButton onClick={()=> handleContactClick()}>
                                         <EmailIcon />
                                         <Typography>
                                             Contact me
