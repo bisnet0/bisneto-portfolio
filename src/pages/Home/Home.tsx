@@ -1,3 +1,4 @@
+import FloatButton from "../../components/FloatButton/FloatButton"
 import NavBar from "../../components/NavBar/NavBar"
 import About from "./sections/About/About"
 import Baseboard from "./sections/Baseboard/Baseboard"
@@ -16,6 +17,7 @@ const Home = () =>{
         <Skills />
         <Projects />
         <Baseboard />
+        <FloatButton />
       </>
     )
     
