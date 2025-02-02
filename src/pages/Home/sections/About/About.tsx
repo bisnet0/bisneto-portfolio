@@ -1,5 +1,7 @@
 import { Box, Container, Grid, styled, Typography, Button, Divider } from "@mui/material";
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import SchoolIcon from '@mui/icons-material/School';
 
 const About = () => {
@@ -50,7 +52,7 @@ const About = () => {
         border: `1px solid ${theme.palette.primary.contrastText}`,
         borderRadius: "4px",
         padding: "10px 15px",
-        width: "60%",
+        width: "68%",
         color: theme.palette.primary.contrastText,
         display: "inline-flex",
         alignItems: "center",
@@ -59,6 +61,28 @@ const About = () => {
         '&:hover': {
             backgroundColor: theme.palette.secondary.main,
             color: theme.palette.primary.main,
+            cursor: "pointer"
+        },
+        [theme.breakpoints.up("md")]: {
+            padding: "10px 15px",
+            width: "25%",
+        },
+    }));
+
+    const LinkedInButton = styled(Button)(({ theme }) => ({
+        backgroundColor: "#0077B5", // Cor azul do LinkedIn
+        border: `1px solid ${theme.palette.primary.contrastText}`,
+        borderRadius: "4px",
+        padding: "10px 15px",
+        width: "68%",
+        color: theme.palette.primary.contrastText,
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "10px",
+        '&:hover': {
+            backgroundColor: "#005582", // Cor azul mais escura para o hover
+            color: theme.palette.primary.contrastText,
             cursor: "pointer"
         },
         [theme.breakpoints.up("md")]: {
@@ -101,10 +125,14 @@ const About = () => {
                 </Grid>
                 <Box mt={4} textAlign="center">
                     <FinalWorkButton onClick={() => window.open("https://drive.google.com/file/d/1hG7Q12aubtZ8iiRPz5gd9iX6culAv6Zd/view?usp=sharing", "_blank")}>
+                    <PictureAsPdfIcon />
                         View My Capstone Project
                     </FinalWorkButton>
+                    <LinkedInButton onClick={() => window.open("https://www.linkedin.com/posts/bisnet0_tcc-trabalhodeconclusaodecurso-backend-activity-7224933035924705281-qp9C?utm_source=share&utm_medium=member_desktop", "_blank")}>
+                        <LinkedInIcon /> {/* Ícone do LinkedIn */}
+                        My Presentation
+                    </LinkedInButton>
                 </Box>
-
                 <Box mt={4}>
                     <TextWithBar variant="body1" align="left" color="text.primary" paragraph>
                         I am passionate about building innovative solutions and continuously learning new technologies to improve my skill set. I am eager to contribute to impactful projects and collaborate with like-minded professionals.
