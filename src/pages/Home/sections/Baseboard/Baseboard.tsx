@@ -1,7 +1,6 @@
 import { Box, Typography, IconButton } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import handleContactClick from '../../../../components/EmailHandler/EmailHandler';
 import EmailIcon from '@mui/icons-material/Email';
 import EmailHandler from '../../../../components/EmailHandler/EmailHandler';
 
