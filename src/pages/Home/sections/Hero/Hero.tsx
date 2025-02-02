@@ -63,7 +63,7 @@ const Hero = () => {
                                     fontSize: { xs: '1.7em', md: '3em' }, // Responsivo
                                     color: theme.palette.secondary.main, // Cor do tema
                                     display: 'inline-block',
-                                    paddingLeft: { xs: '14px', md: '54px' }
+                                    paddingLeft: { xs: '5.5%', md: '8%' }
                                 }}
                             >
                                 <TypeAnimation
