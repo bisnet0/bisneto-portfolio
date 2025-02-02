@@ -60,10 +60,10 @@ const Hero = () => {
                                 paddingBottom={2}
                                 paddingLeft={2}
                                 sx={{
-                                    fontSize: { xs: '1.8em', md: '3em' }, // Responsivo
+                                    fontSize: { xs: '1.7em', md: '3em' }, // Responsivo
                                     color: theme.palette.secondary.main, // Cor do tema
                                     display: 'inline-block',
-                                    paddingLeft: { xs: '12px', md: '54px' }
+                                    paddingLeft: { xs: '14px', md: '54px' }
                                 }}
                             >
                                 <TypeAnimation
