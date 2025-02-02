@@ -22,6 +22,11 @@ const About = () => {
         alignItems: "center",
         justifyContent: "center",
         height: "200px",
+        '&:hover': {
+            backgroundColor: theme.palette.secondary.main,
+            color: theme.palette.primary.main,
+            cursor: "pointer"
+        },
         [theme.breakpoints.up("md")]: {
             padding: "30px",
             height: "250px",
