@@ -41,9 +41,6 @@ const Skills = () => {
                         <Grid item xs={6} sm={6} md={4} lg={2} key={index}>
                             <SkillBox>
                                 <Typography variant="h6" color="primary.main">{skill}</Typography>
-                                {/* <Typography variant="body2" color="text.secondary" marginTop={1}>
-                                    A brief description or proficiency level of {skill}.
-                                </Typography> */}
                             </SkillBox>
                         </Grid>
                     ))}
