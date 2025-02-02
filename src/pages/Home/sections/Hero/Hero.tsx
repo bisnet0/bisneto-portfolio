@@ -6,6 +6,7 @@ import StyledButton from "../../../../components/StyledButton/StyledButton";
 import { AnimatedBackground } from "../../../../components/AnimatedBackground/AnimatedBackground";
 import { TypeAnimation } from 'react-type-animation';
 import theme from "../../../../theme";
+import EmailHandler from "../../../../components/EmailHandler/EmailHandler";
 
 
 
@@ -35,17 +36,6 @@ const Hero = () => {
 
     }))
 
-    const handleContactClick = () => {
-        const email = "your-email@gmail.com"; // Replace with your email
-        const subject = "CONTACT FROM YOUR PORTFOLIO"; // Custom subject
-        const body = "Hi, Henrique! I want to contact you!"; // Custom message
-
-        // Construct the mailto link
-        const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-        // Open the default email client
-        window.location.href = mailtoLink;
-    };
     return (
         <>
             <StyledHero id="hero">
@@ -73,7 +63,7 @@ const Hero = () => {
                                     fontSize: { xs: '1.8em', md: '3em' }, // Responsivo
                                     color: theme.palette.secondary.main, // Cor do tema
                                     display: 'inline-block',
-                                    paddingLeft: {xs:'12px', md:'54px'}
+                                    paddingLeft: { xs: '12px', md: '54px' }
                                 }}
                             >
                                 <TypeAnimation
@@ -96,7 +86,7 @@ const Hero = () => {
                                     </StyledButton>
                                 </Grid>
                                 <Grid item xs={12} md={4} display={"flex"} justifyContent={"center"}>
-                                    <StyledButton onClick={() => handleContactClick()}>
+                                    <StyledButton onClick={EmailHandler()}>
                                         <EmailIcon />
                                         <Typography>
                                             Contact me
