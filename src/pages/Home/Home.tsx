@@ -1,3 +1,4 @@
+import CustomScrollbar from "../../components/CustomScrollbar/CustomScrollbar"
 import FloatButton from "../../components/FloatButton/FloatButton"
 import NavBar from "../../components/NavBar/NavBar"
 import About from "./sections/About/About"
@@ -18,6 +19,7 @@ const Home = () =>{
         <Projects />
         <Baseboard />
         <FloatButton />
+        <CustomScrollbar />
       </>
     )
     
