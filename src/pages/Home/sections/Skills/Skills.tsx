@@ -18,6 +18,10 @@ const Skills = () => {
         alignItems: "center",
         justifyContent: "center",
         height: "50px",
+        ":hover": {
+            backgroundColor: theme.palette.secondary.main,
+            color: theme.palette.primary.main
+        },
         [theme.breakpoints.up("md")]: {
             padding: "15px",
             height: "50px",
