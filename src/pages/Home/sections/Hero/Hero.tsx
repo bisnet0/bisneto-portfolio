@@ -4,6 +4,8 @@ import DownloadIcon from '@mui/icons-material/Download';
 import EmailIcon from '@mui/icons-material/Email';
 import StyledButton from "../../../../components/StyledButton/StyledButton";
 import { AnimatedBackground } from "../../../../components/AnimatedBackground/AnimatedBackground";
+import { TypeAnimation } from 'react-type-animation';
+import theme from "../../../../theme";
 
 
 
@@ -33,17 +35,17 @@ const Hero = () => {
 
     }))
 
-        const handleContactClick = () => {
-            const email = "your-email@gmail.com"; // Replace with your email
-            const subject = "CONTACT FROM YOUR PORTFOLIO"; // Custom subject
-            const body = "Hi, Henrique! I want to contact you!"; // Custom message
-    
-            // Construct the mailto link
-            const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    
-            // Open the default email client
-            window.location.href = mailtoLink;
-        };
+    const handleContactClick = () => {
+        const email = "your-email@gmail.com"; // Replace with your email
+        const subject = "CONTACT FROM YOUR PORTFOLIO"; // Custom subject
+        const body = "Hi, Henrique! I want to contact you!"; // Custom message
+
+        // Construct the mailto link
+        const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+        // Open the default email client
+        window.location.href = mailtoLink;
+    };
     return (
         <>
             <StyledHero id="hero">
@@ -61,10 +63,32 @@ const Hero = () => {
                         </Grid>
                         <Grid item xs={12} md={8}>
                             <Typography color="primary.contrastText" variant="h1" textAlign={"center"}>Henrique Bisneto</Typography>
-                            <Typography color="primary.contrastText" variant="h2" textAlign={"center"} paddingBottom={2}>I'm a Software Developer</Typography>
+                            <Typography
+                                color="primary.contrastText"
+                                variant="h2"
+                                textAlign={"center"}
+                                paddingBottom={2}
+                                paddingLeft={2}
+                                sx={{
+                                    fontSize: { xs: '1.8em', md: '3em' }, // Responsivo
+                                    color: theme.palette.secondary.main, // Cor do tema
+                                    display: 'inline-block',
+                                    paddingLeft: {xs:'12px', md:'54px'}
+                                }}
+                            >
+                                <TypeAnimation
+                                    sequence={[
+                                        "< I'm a Software Developer />", // Texto que será digitado
+                                        2000, // Tempo de pausa após a digitação
+                                    ]}
+                                    speed={6} // Velocidade da digitação
+                                    repeat={1} // Quantidade de repetições (1 para não repetir)
+                                />
+
+                            </Typography>
                             <Grid container display={"flex"} justifyContent={"center"} spacing={2} paddingTop={3}>
                                 <Grid item xs={12} md={4} display={"flex"} justifyContent={"center"}>
-                                    <StyledButton onClick={()=> window.open("https://drive.usercontent.google.com/download?id=1jAOuBD5NmBkF9Sye-MWPo-ao_j3pWUq9&export=download&authuser=0", "_blank")}>
+                                    <StyledButton onClick={() => window.open("https://drive.usercontent.google.com/download?id=1jAOuBD5NmBkF9Sye-MWPo-ao_j3pWUq9&export=download&authuser=0", "_blank")}>
                                         <DownloadIcon />
                                         <Typography>
                                             Download CV
@@ -72,7 +96,7 @@ const Hero = () => {
                                     </StyledButton>
                                 </Grid>
                                 <Grid item xs={12} md={4} display={"flex"} justifyContent={"center"}>
-                                    <StyledButton onClick={()=> handleContactClick()}>
+                                    <StyledButton onClick={() => handleContactClick()}>
                                         <EmailIcon />
                                         <Typography>
                                             Contact me
