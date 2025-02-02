@@ -29,12 +29,13 @@ const NavBar = () => {
                             to="skills" // ID of the target section
                             smooth={true}
                             duration={500}
-                            offset={-70}
+                            offset={window.innerWidth > 1024 ? -300 : -180} // Ajusta o offset dependendo do tamanho da tela
                             style={{ cursor: "pointer" }}
                         >
                             Skills
                         </Link>
                     </MenuItem>
+
                     <MenuItem>
                         <Link
                             to="projects" // ID of the target section
