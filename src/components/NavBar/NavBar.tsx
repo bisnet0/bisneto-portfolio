@@ -29,7 +29,7 @@ const NavBar = () => {
                             to="skills" // ID of the target section
                             smooth={true}
                             duration={500}
-                            offset={window.innerWidth > 1024 ? -300 : -180} // Ajusta o offset dependendo do tamanho da tela
+                            offset={window.innerWidth > 1024 ? -500 : -180} // Ajusta o offset dependendo do tamanho da tela
                             style={{ cursor: "pointer" }}
                         >
                             Skills
