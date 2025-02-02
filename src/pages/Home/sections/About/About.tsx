@@ -25,7 +25,6 @@ const About = () => {
         '&:hover': {
             backgroundColor: theme.palette.secondary.main,
             color: theme.palette.primary.main,
-            cursor: "pointer"
         },
         [theme.breakpoints.up("md")]: {
             padding: "30px",
