@@ -78,7 +78,7 @@ const About = () => {
         border: `1px solid ${theme.palette.primary.contrastText}`,
         borderRadius: "4px",
         padding: "10px 15px",
-        width: "68%",
+        width: "70%",
         color: theme.palette.primary.contrastText,
         display: "inline-flex",
         alignItems: "center",
