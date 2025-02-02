@@ -123,7 +123,7 @@ const About = () => {
                         </InfoBox>
                     </Grid>
                 </Grid>
-                <Box mt={4} textAlign="center">
+                <Box mt={4} textAlign="center" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: { xs: 'column', md: 'row' }, gap: {  md: 1 , xs: 1} }}>
                     <FinalWorkButton onClick={() => window.open("https://drive.google.com/file/d/1hG7Q12aubtZ8iiRPz5gd9iX6culAv6Zd/view?usp=sharing", "_blank")}>
                     <PictureAsPdfIcon />
                         View My Capstone Project
