@@ -62,8 +62,10 @@ const Hero = () => {
                                 sx={{
                                     fontSize: { xs: '1.7em', md: '3em' }, // Responsivo
                                     color: theme.palette.secondary.main, // Cor do tema
-                                    display: 'inline-block',
-                                    paddingLeft: { xs: '5.5%', md: '8%' }
+                                    display: 'flex', // Centralizar o texto horizontalmente
+                                    alignItems: 'center', // Centralizar o texto verticalmente
+                                    justifyContent: 'center',
+                                    textAlign: 'center'
                                 }}
                             >
                                 <TypeAnimation
