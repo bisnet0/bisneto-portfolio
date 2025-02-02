@@ -1,5 +1,5 @@
-import { Box, Container, Grid, styled, Typography } from "@mui/material";
-import WorkIcon from '@mui/icons-material/Work';
+import { Box, Container, Grid, styled, Typography, Button, Divider } from "@mui/material";
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import SchoolIcon from '@mui/icons-material/School';
 
 const About = () => {
@@ -26,22 +26,49 @@ const About = () => {
         },
     }));
 
-    const TextWithUnderline = styled(Typography)(({ theme }) => ({
+    const TextWithBar = styled(Typography)(({ theme }) => ({
         position: "relative",
         display: "inline-block",
-        textAlign: "center",
-        "&::after": {
+        textAlign: "left",
+        fontStyle: "italic",
+        paddingLeft: "15px", // Espaço entre a barra e o texto
+        "&::before": {
             content: '""',
             position: "absolute",
-            left: "50%",
-            bottom: -25, // Espaço entre o texto e o traço
-            transform: "translateX(-50%)",
-            width: "100%", // Largura do traço
-            height: "1px", // Espessura do traço
-            backgroundColor:'rgba(192, 192, 192, 0.5)', // Cor do traço' rgba(179, 128, 128, 0.5),
+            left: 0,
+            top: "50%",
+            transform: "translateY(-50%)",
+            width: "3px", // Espessura da barra
+            height: "100%", // Altura da barra
+            backgroundColor: theme.palette.primary.main, // Cor da barra
         },
     }));
-    
+
+
+    const FinalWorkButton = styled(Button)(({ theme }) => ({
+        backgroundColor: theme.palette.primary.main,
+        border: `1px solid ${theme.palette.primary.contrastText}`,
+        borderRadius: "4px",
+        padding: "10px 15px",
+        width: "60%",
+        color: theme.palette.primary.contrastText,
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "10px",
+        '&:hover': {
+            backgroundColor: theme.palette.secondary.main,
+            color: theme.palette.primary.main,
+            cursor: "pointer"
+        },
+        [theme.breakpoints.up("md")]: {
+            padding: "10px 15px",
+            width: "25%",
+        },
+    }));
+
+
+
 
     return (
         <StyledAbout id="about">
@@ -53,10 +80,10 @@ const About = () => {
                     {/* Experiência */}
                     <Grid item xs={12} md={6}>
                         <InfoBox>
-                            <WorkIcon fontSize="large" color="primary" />
+                            <WorkspacePremiumIcon fontSize="large" color="primary" />
                             <Typography variant="h6" color="primary.main" marginTop={2}>Experience</Typography>
                             <Typography variant="body2" color="text.secondary" marginTop={1}>
-                                I have worked on various software development projects, including web and mobile applications, using technologies such as React, Node.js, and Java.
+                                I've worked on various software projects, mainly at Grupo Nobre Companies, using Node.js, React, Angular, and Python. I also enhanced my DevOps skills, including deployment, API updates, cloud management, and SSL handling.
                             </Typography>
                         </InfoBox>
                     </Grid>
@@ -67,16 +94,24 @@ const About = () => {
                             <SchoolIcon fontSize="large" color="primary" />
                             <Typography variant="h6" color="primary.main" marginTop={2}>Education</Typography>
                             <Typography variant="body2" color="text.secondary" marginTop={1}>
-                                I hold a degree in Computer Science from XYZ University, where I developed a strong foundation in algorithms, data structures, and software engineering.
+                                I have a degree in Analysis and Systems Development from UNIFAN, where I built a strong foundation in Java and C algorithms, frontend development with React and Angular, backend frameworks like Spring, and data science with Python, Pandas, and NumPy.
                             </Typography>
                         </InfoBox>
                     </Grid>
                 </Grid>
+                <Box mt={4} textAlign="center">
+                    <FinalWorkButton onClick={() => window.open("https://drive.google.com/file/d/1hG7Q12aubtZ8iiRPz5gd9iX6culAv6Zd/view?usp=sharing", "_blank")}>
+                        View My Capstone Project
+                    </FinalWorkButton>
+                </Box>
 
                 <Box mt={4}>
-                    <TextWithUnderline variant="body1" align="center" color="text.primary" paragraph>
+                    <TextWithBar variant="body1" align="left" color="text.primary" paragraph>
                         I am passionate about building innovative solutions and continuously learning new technologies to improve my skill set. I am eager to contribute to impactful projects and collaborate with like-minded professionals.
-                    </TextWithUnderline>
+                    </TextWithBar>
+                </Box>
+                <Box mt={4}>
+                    <Divider /> {/* Linha horizontal */}
                 </Box>
             </Container>
         </StyledAbout>
