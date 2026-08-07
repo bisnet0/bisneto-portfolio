@@ -1,10 +1,30 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="src\assets\images\favicon.ico" />
-    <meta name="viewport" content="initial-scale=1, width=device-width" />
-    <title> Portfolio | Henrique Bisneto </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#030405" />
+    <meta name="description" content="Henrique Bisneto's software engineering portfolio: full-stack products, integrations, data and delivery." />
+    <meta property="og:title" content="Henrique Bisneto | Software Engineer" />
+    <meta property="og:description" content="Full-stack products, integrations, data and delivery." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.henriquebisneto.com.br" />
+    <meta property="og:image" content="https://www.henriquebisneto.com.br/video/me_coding_poster.webp" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://www.henriquebisneto.com.br" />
+    <link rel="icon" href="/src/assets/images/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <script>
+      (function () {
+        var match = document.cookie.match(/(?:^|; )portfolio-theme=(light|dark)/);
+        var mode = match ? match[1] : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.dataset.theme = mode;
+        document.documentElement.style.colorScheme = mode;
+      })();
+    </script>
+    <title>Henrique Bisneto | Software Engineer</title>
   </head>
   <body>
     <div id="root"></div>
