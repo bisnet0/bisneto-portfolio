@@ -24,7 +24,7 @@ Portfólio bilíngue de engenheiro de software organizado em **ambientes separad
 | UI | React 18 + MUI 6 + Emotion |
 | Rotas | react-router-dom 7 (BrowserRouter + fallback `404.html`) |
 | Animação | Framer Motion 12 |
-| Deploy | `gh-pages` para a branch `gh-pages` |
+| Deploy | GitHub Actions → build + push para a branch `gh-pages` |
 | Fontes | Instrument Serif, Sora, JetBrains Mono (Google Fonts) |
 
 ## Estrutura
@@ -120,16 +120,18 @@ Alturas: seção = `100vh + (n × 95vh + 52vh)`; o card mede a altura real via `
 ```bash
 npm run dev      # Vite em 0.0.0.0:3000
 npm run lint     # ESLint
-npm run build    # tsc -b + vite build (+ postbuild copia index.html para 404.html)
+npm run build    # tsc -b + vite build + postbuild (404.html e entradas /frontend e /backend)
 npm run preview  # Pré-visualização do build
 npm run deploy   # Build + publicação em gh-pages
 ```
 
 ## Deploy e rotas
 
-- `gh-pages` publica `dist` na branch `gh-pages`; `public/CNAME` preserva `www.henriquebisneto.com.br`.
-- Como o site usa `BrowserRouter`, o `postbuild` copia `dist/index.html` para `dist/404.html` — o GitHub Pages serve essa cópia em `/frontend` e `/backend` e o app assume a rota.
+- `.github/workflows/deploy.yml` roda em todo push para `main` ou `NEW-LAYOUT` (e por `workflow_dispatch`): `npm ci` → `npm run lint` → `npm run build` → publica `dist` na branch `gh-pages` com o `GITHUB_TOKEN` (force-push, histórico descartável). O GitHub Pages continua configurado como "Deploy from branch: gh-pages / root", então o push publica em ~1 min.
+- `scripts/postbuild.mjs` escreve, a partir do build: `dist/404.html` (fallback da SPA) e `dist/frontend/index.html` + `dist/backend/index.html` — assim essas rotas respondem **200** (com `301` de `/frontend` → `/frontend/`) e cada uma carrega seu próprio `<title>`, `description`, `canonical` e `og:url`.
+- `public/CNAME` preserva `www.henriquebisneto.com.br`; o apex faz 301 para o `www` pelos registros A do GitHub Pages.
 - `public/.nojekyll` evita o processamento Jekyll.
+- Para usar o pipeline nativo (`actions/upload-pages-artifact` + `actions/deploy-pages`) basta trocar Settings → Pages → Source para "GitHub Actions"; hoje o workflow publica na branch para não depender dessa configuração.
 
 ## Validação executada
 
@@ -160,4 +162,5 @@ npm run deploy   # Build + publicação em gh-pages
 - Os comentários são reais, mas o LinkedIn limita o guest view (ex.: 10 de 22). Para capturar a thread inteira é preciso estar logado; os dados vivem em `src/content/postComments.ts` e podem ser completados manualmente.
 - O fade do post pode ser afinado em `ProjectDeck` (`reveal` window) e o deslocamento da fila em `safeLeft`.
 - Autoplay da rádio não pode ser verificado em navegador headless (sem gesto confiável); em uso normal o play inicia no primeiro clique/tecla.
-- O merge entre `gh-pages` e `main` (anotado no OpenCode) segue pendente.
+- O merge entre `gh-pages` e `main` (anotado no OpenCode) segue pendente — `main` ainda está 2 commits atrás de `NEW-LAYOUT` e é ela que o Dependabot usa como referência.
+- `npm run deploy` (pacote `gh-pages`) virou legado: o deploy agora é feito pelo workflow.
