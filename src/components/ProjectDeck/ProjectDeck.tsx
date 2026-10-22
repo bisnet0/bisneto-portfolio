@@ -224,15 +224,11 @@ interface DeckRowProps {
   index: number
   track: 'frontend' | 'backend'
   layout: DeckLayout
-  metrics: DeckMetrics
   progress: MotionValue<number>
-  hovered: boolean
-  burst: number
-  onHoverChange: (hovered: boolean) => void
 }
 
 /** The opposite corner: the real post about the project, revealed once the card lands. */
-const DeckRow = ({ entry, index, track, layout, metrics, progress, hovered, burst, onHoverChange }: DeckRowProps) => {
+const DeckRow = ({ entry, index, track, layout, progress }: DeckRowProps) => {
   const slot = layout.slots[index]
   const timing = layout.timings[index]
   const post = postBySlug[entry.project.slug]
@@ -255,22 +251,13 @@ const DeckRow = ({ entry, index, track, layout, metrics, progress, hovered, burs
           zIndex: 2,
         }}
       >
-        <PostPanel entry={entry} index={index} track={track} onHoverChange={onHoverChange} />
+        <PostPanel entry={entry} index={index} track={track} />
+        {post.comments.length > 0 && (
+          <Box sx={{ mt: 1.4 }}>
+            <CommentStorm comments={post.comments} track={track} seed={entry.project.slug} />
+          </Box>
+        )}
       </motion.div>
-
-      <Box
-        sx={{
-          position: 'absolute',
-          top: slot.y - 26,
-          left: layout.rowLeft,
-          width: layout.rowWidth,
-          height: Math.max(metrics.cardH, 220) + 52,
-          zIndex: 9,
-          pointerEvents: 'none',
-        }}
-      >
-        <CommentStorm comments={post.comments} active={hovered} burst={burst} track={track} />
-      </Box>
     </>
   )
 }
@@ -288,9 +275,7 @@ const ProjectDeck = ({ track, content, onOpen }: ProjectDeckProps) => {
   const [metrics, setMetrics] = useState<DeckMetrics | null>(null)
   const [compact, setCompact] = useState(false)
   const [activeIndex, setActiveIndex] = useState(-1)
-  const [hoveredRow, setHoveredRow] = useState<number | null>(null)
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
-  const [burst, setBurst] = useState(0)
   const entries = content.projects
   const count = entries.length
 
@@ -381,11 +366,6 @@ const ProjectDeck = ({ track, content, onOpen }: ProjectDeckProps) => {
     [layout, reduceMotion],
   )
 
-  const handleRowHover = useCallback((index: number) => (hovered: boolean) => {
-    setHoveredRow((current) => (hovered ? index : current === index ? null : current))
-    if (hovered) setBurst((current) => current + 1)
-  }, [])
-
   if (compact || reduceMotion) {
     return (
       <Box
@@ -429,19 +409,9 @@ const ProjectDeck = ({ track, content, onOpen }: ProjectDeckProps) => {
                 <ProjectCard entry={entry} index={index} track={track} landed={false} onOpen={() => onOpen(index)} />
 
                 {post && (
-                  <Box
-                    sx={{ position: 'relative', mt: 1.6, overflow: 'hidden', borderRadius: '12px' }}
-                    onMouseEnter={() => handleRowHover(index)(true)}
-                    onMouseLeave={() => handleRowHover(index)(false)}
-                  >
+                  <Box sx={{ position: 'relative', mt: 1.6, overflow: 'hidden', borderRadius: '12px' }}>
                     <PostPanel entry={entry} index={index} track={track} />
-                    <CommentStorm
-                      comments={post.comments}
-                      active={hoveredRow === index}
-                      burst={burst}
-                      track={track}
-                      compact
-                    />
+                    <CommentStorm comments={post.comments} track={track} seed={entry.project.slug} compact />
                   </Box>
                 )}
               </Box>
@@ -498,11 +468,7 @@ const ProjectDeck = ({ track, content, onOpen }: ProjectDeckProps) => {
                   index={index}
                   track={track}
                   layout={layout}
-                  metrics={metrics}
                   progress={scrollYProgress}
-                  hovered={hoveredRow === index}
-                  burst={burst}
-                  onHoverChange={handleRowHover(index)}
                 />
               ))
             : null}

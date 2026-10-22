@@ -11,14 +11,13 @@ interface PostPanelProps {
   entry: TrackProjectEntry
   index: number
   track: 'frontend' | 'backend'
-  onHoverChange?: (hovered: boolean) => void
 }
 
 /**
  * Fills the corner opposite the project card with the real post about that work
  * (LinkedIn thread or GitHub repo) and its captured comments.
  */
-const PostPanel = ({ entry, index, track, onHoverChange }: PostPanelProps) => {
+const PostPanel = ({ entry, index, track }: PostPanelProps) => {
   const { language } = usePreferences()
   const post = postBySlug[entry.project.slug]
   const isBackend = track === 'backend'
@@ -37,10 +36,6 @@ const PostPanel = ({ entry, index, track, onHoverChange }: PostPanelProps) => {
       href={post.url}
       target="_blank"
       rel="noopener noreferrer"
-      onMouseEnter={() => onHoverChange?.(true)}
-      onMouseLeave={() => onHoverChange?.(false)}
-      onFocus={() => onHoverChange?.(true)}
-      onBlur={() => onHoverChange?.(false)}
       className={isBackend ? 'panel mono' : 'liquid-glass'}
       sx={{
         display: 'block',
@@ -121,8 +116,8 @@ const PostPanel = ({ entry, index, track, onHoverChange }: PostPanelProps) => {
             </Stack>
             <Typography className="mono" sx={{ fontSize: '0.52rem', letterSpacing: '0.04em', opacity: 0.8 }}>
               {language === 'pt'
-                ? `passe o mouse: ${captured} comentários reais`
-                : `hover: ${captured} real comments`}
+                ? `${captured} comentários reais abaixo`
+                : `${captured} real comments below`}
             </Typography>
           </>
         ) : (

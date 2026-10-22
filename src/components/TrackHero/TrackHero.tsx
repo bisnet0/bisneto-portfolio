@@ -349,22 +349,49 @@ const TrackHero = ({ track, content, onExplore, onContact }: TrackHeroProps) => 
         </Box>
       </Box>
 
-      <Typography
-        className="mono"
+      <Stack
+        direction="column"
+        alignItems="center"
+        spacing={0.6}
         sx={{
           position: 'absolute',
-          bottom: { xs: 18, md: 26 },
+          bottom: { xs: 14, md: 22 },
           left: '50%',
           translate: '-50% 0',
-          color: 'text.secondary',
-          fontSize: '0.58rem',
-          letterSpacing: '0.16em',
-          textTransform: 'uppercase',
-          display: { xs: 'none', md: 'block' },
+          display: { xs: 'none', md: 'flex' },
+          pointerEvents: 'none',
         }}
       >
-        {content.heroHint[language]}
-      </Typography>
+        <Typography
+          className="mono"
+          sx={{
+            color: 'text.secondary',
+            fontSize: '0.58rem',
+            letterSpacing: '0.16em',
+            textTransform: 'uppercase',
+            textAlign: 'center',
+          }}
+        >
+          {content.heroHint[language]}
+        </Typography>
+        <Box
+          aria-hidden="true"
+          sx={{
+            display: 'grid',
+            placeItems: 'center',
+            width: 26,
+            height: 26,
+            borderRadius: '50%',
+            border: '1px solid var(--line)',
+            color: 'var(--accent)',
+            fontSize: '0.9rem',
+            lineHeight: 1,
+            animation: reduceMotion ? 'none' : 'scroll-hint 1.8s ease-in-out infinite',
+          }}
+        >
+          ↓
+        </Box>
+      </Stack>
     </Box>
   )
 }

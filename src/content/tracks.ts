@@ -265,6 +265,27 @@ const backend: TrackContent = {
 
 export const tracks: Record<Exclude<TrackId, 'hub'>, TrackContent> = { frontend, backend }
 
+export interface HubProjectEntry {
+  entry: TrackProjectEntry
+  track: 'frontend' | 'backend'
+}
+
+/** Every project once: the track that lists it first owns the card. */
+export const hubProjects = (): HubProjectEntry[] => {
+  const seen = new Set<string>()
+  const items: HubProjectEntry[] = []
+
+  ;(['frontend', 'backend'] as const).forEach((track) => {
+    tracks[track].projects.forEach((entry) => {
+      if (seen.has(entry.project.slug)) return
+      seen.add(entry.project.slug)
+      items.push({ entry, track })
+    })
+  })
+
+  return items
+}
+
 export const hubCopy = {
   pt: {
     kicker: '// henrique bisneto',

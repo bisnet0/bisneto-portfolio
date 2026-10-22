@@ -1,11 +1,14 @@
 /**
  * Tiny WebAudio toolkit — mechanical keyboard clicks and UI clicks.
- * No audio files: every sound is synthesized (two layers per key: a plastic click
- * plus a low body "thock"), so nothing ships in the bundle.
+ *
+ * The key sound is pure filtered noise (no oscillator): a short plastic click plus
+ * a low, dry "thock", which is what a real switch sounds like. Oscillators made it
+ * sound like a beep, so typing no longer uses any.
  */
 
 let context: AudioContext | null = null
 let master: GainNode | null = null
+let noise: AudioBuffer | null = null
 let enabled = true
 let lastKeyAt = 0
 let keyCount = 0
@@ -23,11 +26,11 @@ const ensureContext = (): AudioContext | null => {
   if (!context) {
     context = new Ctor()
     master = context.createGain()
-    master.gain.value = 0.5
+    master.gain.value = 0.42
     const shelf = context.createBiquadFilter()
     shelf.type = 'highshelf'
-    shelf.frequency.value = 4200
-    shelf.gain.value = -4
+    shelf.frequency.value = 5200
+    shelf.gain.value = -6
     master.connect(shelf)
     shelf.connect(context.destination)
   }
@@ -37,69 +40,101 @@ const ensureContext = (): AudioContext | null => {
   return context
 }
 
-const noiseBuffer = (ctx: AudioContext, seconds: number) => {
-  const length = Math.max(1, Math.floor(ctx.sampleRate * seconds))
-  const buffer = ctx.createBuffer(1, length, ctx.sampleRate)
-  const data = buffer.getChannelData(0)
+/** One 0.3 s noise buffer reused by every hit (cheap and phase-random). */
+const getNoise = (ctx: AudioContext) => {
+  if (noise && noise.sampleRate === ctx.sampleRate) return noise
 
+  const length = Math.floor(ctx.sampleRate * 0.3)
+  noise = ctx.createBuffer(1, length, ctx.sampleRate)
+  const data = noise.getChannelData(0)
   for (let index = 0; index < length; index += 1) {
-    data[index] = (Math.random() * 2 - 1) * (1 - index / length) ** 2
+    data[index] = Math.random() * 2 - 1
   }
 
-  return buffer
+  return noise
 }
 
-/** Mechanical switch: low body + plastic click, with per-key variation. */
+interface HitOptions {
+  filterType: BiquadFilterType
+  frequency: number
+  q?: number
+  gain: number
+  attack: number
+  decay: number
+  rate?: number
+  offset?: number
+}
+
+const hit = (ctx: AudioContext, destination: AudioNode, options: HitOptions) => {
+  const now = ctx.currentTime
+  const source = ctx.createBufferSource()
+  const filter = ctx.createBiquadFilter()
+  const envelope = ctx.createGain()
+
+  source.buffer = getNoise(ctx)
+  source.playbackRate.value = options.rate ?? 1
+  filter.type = options.filterType
+  filter.frequency.value = options.frequency
+  filter.Q.value = options.q ?? 0.7
+
+  envelope.gain.setValueAtTime(0.0001, now)
+  envelope.gain.exponentialRampToValueAtTime(Math.max(0.0002, options.gain), now + options.attack)
+  envelope.gain.exponentialRampToValueAtTime(0.0001, now + options.attack + options.decay)
+
+  source.connect(filter)
+  filter.connect(envelope)
+  envelope.connect(destination)
+
+  source.start(now, options.offset ?? Math.random() * 0.15, options.attack + options.decay + 0.02)
+}
+
+/** Mechanical switch: dry click + low body, no tone. */
 const playKey = () => {
   if (!enabled) return
 
   const nowMs = performance.now()
-  if (nowMs - lastKeyAt < 18) return
+  if (nowMs - lastKeyAt < 16) return
   lastKeyAt = nowMs
 
   const ctx = ensureContext()
   if (!ctx || !master) return
 
   keyCount += 1
-  const now = ctx.currentTime
-  const isWide = keyCount % 13 === 0 || Math.random() < 0.06
-  const bodyFreq = isWide ? 96 + Math.random() * 26 : 165 + Math.random() * 55
-  const bodyGain = isWide ? 0.085 : 0.05 + Math.random() * 0.018
-  const bodyDecay = isWide ? 0.13 : 0.062 + Math.random() * 0.02
+  const wide = keyCount % 11 === 0
+  const pitch = 0.88 + Math.random() * 0.3
 
-  // 1) corpo grave (thock)
-  const body = ctx.createOscillator()
-  const bodyGainNode = ctx.createGain()
-  const bodyFilter = ctx.createBiquadFilter()
-  body.type = 'triangle'
-  body.frequency.setValueAtTime(bodyFreq, now)
-  body.frequency.exponentialRampToValueAtTime(bodyFreq * 0.62, now + bodyDecay)
-  bodyFilter.type = 'lowpass'
-  bodyFilter.frequency.value = 900
-  bodyFilter.Q.value = 0.7
-  bodyGainNode.gain.setValueAtTime(0.0001, now)
-  bodyGainNode.gain.exponentialRampToValueAtTime(bodyGain, now + 0.003)
-  bodyGainNode.gain.exponentialRampToValueAtTime(0.0001, now + bodyDecay)
-  body.connect(bodyFilter)
-  bodyFilter.connect(bodyGainNode)
-  bodyGainNode.connect(master)
-  body.start(now)
-  body.stop(now + bodyDecay + 0.02)
+  // 1) plastic click of the keycap
+  hit(ctx, master, {
+    filterType: 'bandpass',
+    frequency: (2400 + Math.random() * 1300) * pitch,
+    q: 1.1,
+    gain: wide ? 0.05 : 0.075,
+    attack: 0.0015,
+    decay: wide ? 0.014 : 0.01,
+    rate: pitch,
+  })
 
-  // 2) clique plástico (ruído filtrado)
-  const click = ctx.createBufferSource()
-  const clickGain = ctx.createGain()
-  const clickFilter = ctx.createBiquadFilter()
-  click.buffer = noiseBuffer(ctx, 0.02)
-  clickFilter.type = 'bandpass'
-  clickFilter.frequency.value = 2100 + Math.random() * 1600
-  clickFilter.Q.value = 0.9
-  clickGain.gain.setValueAtTime(0.055 + Math.random() * 0.015, now)
-  clickGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.022)
-  click.connect(clickFilter)
-  clickFilter.connect(clickGain)
-  clickGain.connect(master)
-  click.start(now)
+  // 2) body resonance (the "thock") — low and dry
+  hit(ctx, master, {
+    filterType: 'lowpass',
+    frequency: (wide ? 260 : 420) + Math.random() * 90,
+    q: 1.6,
+    gain: wide ? 0.075 : 0.052,
+    attack: 0.002,
+    decay: wide ? 0.075 : 0.042,
+    rate: 0.9 + Math.random() * 0.2,
+  })
+
+  // 3) tiny top-end tick so it cuts through the music
+  hit(ctx, master, {
+    filterType: 'highpass',
+    frequency: 5200,
+    q: 0.6,
+    gain: 0.022,
+    attack: 0.001,
+    decay: 0.006,
+    rate: pitch,
+  })
 }
 
 /** Fuller click for buttons, cards and links. */
@@ -109,38 +144,24 @@ const playClick = () => {
   const ctx = ensureContext()
   if (!ctx || !master) return
 
-  const now = ctx.currentTime
+  hit(ctx, master, {
+    filterType: 'lowpass',
+    frequency: 320,
+    q: 1.4,
+    gain: 0.11,
+    attack: 0.003,
+    decay: 0.1,
+    rate: 0.85,
+  })
 
-  const thump = ctx.createOscillator()
-  const thumpGain = ctx.createGain()
-  const thumpFilter = ctx.createBiquadFilter()
-  thump.type = 'sine'
-  thump.frequency.setValueAtTime(190, now)
-  thump.frequency.exponentialRampToValueAtTime(78, now + 0.09)
-  thumpFilter.type = 'lowpass'
-  thumpFilter.frequency.value = 600
-  thumpGain.gain.setValueAtTime(0.0001, now)
-  thumpGain.gain.exponentialRampToValueAtTime(0.075, now + 0.005)
-  thumpGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.13)
-  thump.connect(thumpFilter)
-  thumpFilter.connect(thumpGain)
-  thumpGain.connect(master)
-  thump.start(now)
-  thump.stop(now + 0.15)
-
-  const tick = ctx.createBufferSource()
-  const tickGain = ctx.createGain()
-  const tickFilter = ctx.createBiquadFilter()
-  tick.buffer = noiseBuffer(ctx, 0.04)
-  tickFilter.type = 'bandpass'
-  tickFilter.frequency.value = 2400
-  tickFilter.Q.value = 0.8
-  tickGain.gain.setValueAtTime(0.05, now)
-  tickGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04)
-  tick.connect(tickFilter)
-  tickFilter.connect(tickGain)
-  tickGain.connect(master)
-  tick.start(now)
+  hit(ctx, master, {
+    filterType: 'bandpass',
+    frequency: 1900,
+    q: 0.9,
+    gain: 0.05,
+    attack: 0.0015,
+    decay: 0.03,
+  })
 }
 
 export const sfx = {

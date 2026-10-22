@@ -6,7 +6,7 @@ Portfólio bilíngue de engenheiro de software organizado em **ambientes separad
 
 | Rota | Ambiente | Design |
 | --- | --- | --- |
-| `/` | Hub | landing curta que apresenta as duas trilhas |
+| `/` | Hub | landing com os 11 projetos das duas trilhas e hero que alterna as duas linguagens visuais |
 | `/frontend` | Frontend | liquid glass, Instrument Serif + Sora, acento verde-sálvia |
 | `/backend` | Backend | "hard coding": preto quase absoluto, JetBrains Mono, azul elétrico, janela de IDE ao fundo |
 
@@ -72,6 +72,12 @@ public/
 refs/                             # vídeos e referências de design (fora do deploy, gitignored)
 ```
 
+## Hub
+
+- **Hero alternado:** a cada 7 s o hero troca de persona (frontend ↔ backend) mantendo o mesmo espaço: muda tipografia (Instrument Serif itálico ↔ JetBrains Mono), painel de typing, chips, moldura da foto e glow. A troca é um glitch (`.glitch-hit` com `clip-path` em fatias + jitter, `.glitch-text` com aberração cromática) de ~640 ms; em `prefers-reduced-motion` não alterna. Indicadores `frontend`/`backend` no canto permitem trocar na mão.
+- **Grade de projetos:** `hubProjects()` percorre as trilhas (frontend primeiro) e devolve cada projeto uma única vez, com a trilha de origem — 11 cards com carrossel automático, badge da trilha, foco, stack e link para a trilha.
+- Cada card abre o `GalleryDialog`; no fim, dois botões levam para `/frontend` e `/backend`.
+
 ## Design system por ambiente
 
 Os tokens vivem em `global.css` sob `:root[data-track='...'][data-theme='...']`; o atributo `data-track` é escrito por `TrackTheme` (e por um script inline em `index.html` para evitar flash na primeira pintura).
@@ -89,7 +95,7 @@ Os tokens vivem em `global.css` sob `:root[data-track='...'][data-theme='...']`;
    - A fila é deslocada para a direita (`safeLeft` 468 px em telas ≥1280) para não encostar na rádio flutuante; as larguras dos cards são recalculadas para caber no espaço restante.
 2. **Scroll:** o progresso da seção (`useScroll` com `offset: ['start start','end end']`) alimenta uma câmera virtual e o *timing* individual de cada card. Card *i* voa da fila para o seu slot da cascata (`translate` + `scale` + leve `rotate`), alternando esquerda/direita; o painel de informações abaixo do card aparece ao chegar.
 3. **Leitura:** a câmera ancora cada card no centro/topo do viewport conforme ele pousa; há uma cauda (`TAIL`) após o último pouso para terminar de ler.
-4. **Canto oposto:** ao lado do card, na mesma linha, entra o post real do projeto (`PostPanel`) com o texto original, reações, contagem de comentários e link. O fade é curto: o painel chega a 100% de opacidade em ~3% do progresso logo após o card pousar (antes eram ~13%). Hover no post dispara o `CommentStorm` com os **comentários reais** capturados, presos ao retângulo da linha (`overflow: hidden`), sem invadir as linhas vizinhas.
+4. **Canto oposto:** ao lado do card, na mesma linha, entra o post real do projeto (`PostPanel`) com o texto original, reações, contagem de comentários e link. O fade é curto: o painel chega a 100% de opacidade em ~3% do progresso logo após o card pousar. **Abaixo do post** ficam os `CommentStorm` com os comentários reais, **sempre visíveis** (sem hover), espalhados de forma determinística por slug dentro da largura do post — nunca invadem o lado do card.
 5. **Carrossel:** cada card cicla as próprias capturas a cada 2,4 s (crossfade + contador `04/13` + barra de progresso), pré-carrega o próximo frame e **pausa no hover** do card ou pelo botão de pausa.
 6. **Clique em um card da fila** → scroll suave até o slot daquele projeto (`jumpTo`); clique no card já pousado abre a galeria.
 7. **Fallback:** abaixo de 1024px ou com `prefers-reduced-motion` o componente troca para uma cascata estática (card + post empilhados, storm limitado a 3 chips dentro do bloco).
@@ -120,11 +126,12 @@ Todo card com mais de uma imagem usa o `AutoCarousel` (mesmo comportamento dos p
 
 ## Micro-interações
 
-- **Typing:** `TypingText` digita as linhas de "código" do hero e a descrição de cada card ao pousar; texto completo exposto em `.sr-only`. Cada caractere dispara um clique curto sintetizado (`sfx.key`), com throttle de 22 ms.
+- **Typing:** `TypingText` digita as linhas de "código" do hero e a descrição de cada card ao pousar; texto completo exposto em `.sr-only`. Cada caractere dispara um clique de teclado sintetizado (`sfx.key`), com throttle de 16 ms.
+- **Seta de scroll:** abaixo da frase do hero há uma seta para baixo com pulso (`scroll-hint`, 1,8 s) induzindo a rolagem.
 - **Rede neural:** `NeuralField` desenha nós e conexões; o ponteiro **empurra** os nós (raio 150–170px), o que dá o efeito de "afastar as coisas".
 - **Dados reais:** `src/content/postComments.ts` é gerado a partir das páginas públicas do LinkedIn (texto do post, data derivada do ID da atividade, reações, total de comentários e os comentários visíveis ao visitante — o guest view entrega parte da thread, ex.: 10 de 22; a UI mostra essa proporção). Para os três repositórios, os metadados vêm da API pública do GitHub (linguagem, último push).
 - **Cursor personalizado:** retículo (anel 1 px + mira em cruz + ponto) que cresce para 60 px em elementos interativos, encolhe no clique e dá glitches (jitter + fatias fantasmas) ao entrar/sair de controles, a cada clique e em intervalos aleatórios. `cursor: none !important` é aplicado em `html[data-custom-cursor='on']`, `body.custom-cursor-on` e todos os descendentes; desativado em touch e com reduced motion.
-- **Som:** `sfx.ts` gera tudo por WebAudio (nenhum arquivo de áudio no bundle). Cada tecla tem duas camadas: corpo grave (triângulo + lowpass, "thock") e clique plástico (ruído em bandpass 2,1–3,7 kHz), com variação por tecla e teclas largas mais graves a cada 13. O clique de UI é um thump senoidal + ruído em bandpass, passando por um highshelf de −4 dB. Botão de ondas no player liga/desliga.
+- **Som:** `sfx.ts` gera tudo por WebAudio (nenhum arquivo de áudio no bundle). O typing agora é **só ruído filtrado**, sem oscilador: clique plástico (bandpass 2,4–3,7 kHz), corpo seco (lowpass 260–510 Hz) e um tick de topo (highpass 5,2 kHz), com variação por tecla e teclas mais graves a cada 11. O clique de UI usa as mesmas camadas de ruído. Botão de ondas no player liga/desliga.
 - **Rádio:** player flutuante na base com playlist do YouTube (`PLsVfn9YIFmNBaILsPtU3Vu3KLbsZ4R7oG`) a 16% de volume por padrão, com play/pause, faixa anterior, parar, próxima faixa, volume, mute e sons de interface — tudo persistido no cookie `portfolio-audio`. O embed fica 1×1 e invisível; a UI é própria. Autoplay depende de gesto do usuário.
 - **Rede neural global:** `NeuralField` é montado uma vez por página (`fixed`, atrás de tudo) em `/frontend` e `/backend`; o ponteiro empurra os nós em qualquer seção, não só no hero.
 - **Voltar ao topo:** botão flutuante no canto inferior direito, aparece depois de 700 px de scroll.
@@ -163,6 +170,10 @@ npm run deploy   # Build + publicação em gh-pages
 - Posts com dados reais: 8 posts do LinkedIn (22/10/12/5/11/11/8/3 comentários declarados; 10/6/6/3/6/5/7/2 capturados) + 3 repositórios com linguagem e último push reais.
 - Novos cases: Portal do Cliente, RiftShield e EpiScope com capa WebP e 7–8 frames de galeria cada (vídeos-fonte movidos para `refs/media/`, fora do deploy).
 - Credenciais: 2 premiações, 6 certificados e 3 estudos renderizados; animações `pulse-gold`, `pulse-silver` e `pulse-blue` confirmadas por `getComputedStyle`; galeria abre com título e imagens corretos.
+- Hub: 11 cards, persona alternando de `Interfaces que respondem…` (serif) para `Sistemas que aguentam…` (mono) após 7 s, com `.glitch-hit` presente na troca.
+- Comment storms sempre visíveis: 34 chips em `/backend` sem nenhum evento de mouse, todos com topo abaixo do post (postBottom 123 → primeiro chip em 233).
+- Seta do hero com `animation: scroll-hint` (1,8 s).
+- Som de typing: 0 osciladores e 285 buffer sources num trecho de digitação + scroll.
 - Deck com 8 cards verificado em duas fileiras (topo 471 px, segunda fileira 686 px em 1440×900) sem sobrepor a rádio (x inicial 468 px).
 - Uma única instância de canvas por página com `position: fixed` (rede neural global) e marca da navbar apontando para `/me/nocanva.webp`.
 - Botão "Voltar ao topo" aparecendo após scroll e levando `scrollY` a 0 no clique.

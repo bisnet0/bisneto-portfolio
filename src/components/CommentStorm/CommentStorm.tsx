@@ -4,15 +4,13 @@ import type { PostComment } from '../../content/postComments'
 
 interface CommentStormProps {
   comments: PostComment[]
-  active: boolean
-  /** Increment on every activation so the scatter is re-rolled each hover. */
-  burst: number
   track: 'frontend' | 'backend'
-  /** Small screens: fewer bubbles, kept inside the card width. */
+  /** Stable seed (project slug) so the scatter does not jump on every render. */
+  seed?: string
   compact?: boolean
 }
 
-/** Deterministic little LCG so positions are stable per burst but random across hovers. */
+/** Deterministic little LCG so positions are stable per project. */
 const makeRandom = (seed: number) => {
   let state = seed * 9301 + 49297
 
@@ -22,55 +20,62 @@ const makeRandom = (seed: number) => {
   }
 }
 
+const hashSeed = (value: string) => {
+  let hash = 0
+  for (let index = 0; index < value.length; index += 1) {
+    hash = (hash * 31 + value.charCodeAt(index)) % 100000
+  }
+  return hash + 7
+}
+
 /**
- * Scatters the post comments across the row area. The parent must be the row
- * container with `overflow: hidden` so bubbles never invade neighbouring rows.
+ * Comments scattered right below the post panel — always visible, no hover needed.
+ * The parent gives it the width of the post, so bubbles never reach the card side.
  */
-const CommentStorm = ({ comments, active, burst, track, compact = false }: CommentStormProps) => {
+const CommentStorm = ({ comments, track, seed = 'post', compact = false }: CommentStormProps) => {
   const isBackend = track === 'backend'
 
   const placed = useMemo(() => {
-    const random = makeRandom(burst + 11)
-    const visible = comments.slice(0, compact ? 3 : 8)
-    const spread = compact ? 34 : 46
+    const random = makeRandom(hashSeed(seed))
+    const visible = comments.slice(0, compact ? 3 : 6)
 
     return visible.map((comment, index) => {
       const side = index % 2 === 0
       return {
         comment,
-        left: (side ? 4 : 42) + random() * (compact ? 10 : spread),
-        top: 6 + random() * (compact ? 58 : 70),
-        rotate: (random() - 0.5) * 7,
-        delay: index * 70,
+        left: (side ? 2 : 46) + random() * (compact ? 6 : 14),
+        top: 4 + random() * (compact ? 56 : 62),
+        rotate: (random() - 0.5) * 6,
+        delay: index * 90,
       }
     })
-  }, [comments, burst, compact])
+  }, [comments, seed, compact])
 
-  if (!active || placed.length === 0) return null
+  if (placed.length === 0) return null
 
   return (
     <Box
       aria-hidden="true"
       sx={{
-        position: 'absolute',
-        inset: 0,
-        zIndex: 6,
+        position: 'relative',
+        height: compact ? 132 : 176,
+        width: '100%',
         overflow: 'hidden',
         pointerEvents: 'none',
       }}
     >
       {placed.map(({ comment, left, top, rotate, delay }, index) => (
         <Box
-          key={`${burst}-${index}`}
+          key={`${seed}-${index}`}
           className="storm-chip"
           sx={{
             position: 'absolute',
             left: `${left}%`,
             top: `${top}%`,
-            maxWidth: compact ? 190 : { xs: 210, md: 260 },
+            maxWidth: compact ? '88%' : '52%',
             rotate: `${rotate}deg`,
-            px: 1.1,
-            py: 0.8,
+            px: 1,
+            py: 0.7,
             borderRadius: isBackend ? '4px' : '12px',
             border: `1px solid ${isBackend ? 'var(--line-strong)' : 'var(--line)'}`,
             backgroundColor: isBackend ? 'rgba(6,9,22,0.9)' : 'rgba(12,14,18,0.82)',
@@ -81,12 +86,12 @@ const CommentStorm = ({ comments, active, burst, track, compact = false }: Comme
         >
           <Typography
             className="mono"
-            sx={{ color: 'var(--accent)', fontSize: '0.54rem', letterSpacing: '0.04em', mb: 0.3 }}
+            sx={{ color: 'var(--accent)', fontSize: '0.52rem', letterSpacing: '0.04em', mb: 0.25 }}
           >
             {comment.author}
           </Typography>
-          <Typography sx={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.62rem', lineHeight: 1.45, fontWeight: 300 }}>
-            {comment.text}
+          <Typography sx={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.6rem', lineHeight: 1.45, fontWeight: 300 }}>
+            {comment.text.length > 130 ? `${comment.text.slice(0, 127)}…` : comment.text}
           </Typography>
         </Box>
       ))}
