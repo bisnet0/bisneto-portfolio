@@ -9,6 +9,7 @@ export interface ProjectLink {
 }
 
 export interface Project {
+  slug: string
   name: LocalizedText
   period: LocalizedText
   description: LocalizedText
@@ -191,6 +192,7 @@ export const siteCopy = {
 
 export const projects: Project[] = [
   {
+    slug: 'polos',
     name: { pt: 'Gestão de Polos', en: 'Campus Management' },
     period: { pt: '17 a 29 jan. 2025', en: 'Jan 17–29, 2025' },
     description: {
@@ -206,6 +208,7 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: 'tutorials',
     name: { pt: 'Tutoriais de Medicina e Escola Nobre', en: 'Medicine & Nobre School Tutorials' },
     period: { pt: '3 out. a 18 dez. 2024', en: 'Oct 3–Dec 18, 2024' },
     description: {
@@ -225,6 +228,7 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: 'renovame',
     name: { pt: 'Igreja Renova-me', en: 'Renova-me Church' },
     period: { pt: '9 a 16 out. 2024', en: 'Oct 9–16, 2024' },
     description: {
@@ -240,6 +244,7 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: 'nobrehub',
     name: { pt: 'Hub de Eventos Nobre', en: 'Nobre Events Hub' },
     period: { pt: '14 ago. a 2 set. 2024', en: 'Aug 14–Sep 2, 2024' },
     description: {
@@ -254,6 +259,7 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: 'biometria',
     name: { pt: 'Biometria Facial UNEF e UNIFAN', en: 'UNEF & UNIFAN Facial Biometrics' },
     period: { pt: '29 jul. a 6 ago. 2024', en: 'Jul 29–Aug 6, 2024' },
     description: {
@@ -270,6 +276,7 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: 'aniversariantes',
     name: { pt: 'Aniversariantes do Mês', en: 'Monthly Birthdays' },
     period: { pt: '26 jun. a 23 jul. 2024', en: 'Jun 26–Jul 23, 2024' },
     description: {
@@ -284,6 +291,7 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: 'customizer',
     name: { pt: 'Customizador de Portal', en: 'Portal Customizer' },
     period: { pt: '16 a 28 jun. 2024', en: 'Jun 16–28, 2024' },
     description: {
@@ -299,6 +307,7 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: 'tax-analysis',
     name: { pt: 'Análise Preditiva Tributária', en: 'Predictive Tax Analysis' },
     period: { pt: '18 a 19 jun. 2024', en: 'Jun 18–19, 2024' },
     description: {

@@ -1,30 +1,126 @@
+/* ============================================================
+   Tokens — shared
+   ============================================================ */
 :root {
+  --font-display: 'Instrument Serif', serif;
+  --font-body: 'Sora', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-glass: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ============================================================
+   Frontend environment — liquid glass (kept)
+   ============================================================ */
+:root,
+:root[data-track='frontend'] {
   --page-bg: #030405;
   --text-primary: #fff;
   --text-muted: rgba(255, 255, 255, 0.72);
+  --accent: #d9e5c5;
+  --accent-soft: rgba(217, 229, 197, 0.14);
+  --line: rgba(255, 255, 255, 0.12);
+  --surface: rgba(255, 255, 255, 0.03);
   --glass-bg: rgba(255, 255, 255, 0.01);
   --glass-highlight: rgba(255, 255, 255, 0.45);
   --glass-midlight: rgba(255, 255, 255, 0.15);
   --glass-shadow: rgba(0, 0, 0, 0.26);
 }
 
-:root[data-theme='light'] {
+:root[data-track='frontend'][data-theme='light'] {
   --page-bg: #eef1f3;
   --text-primary: #111315;
   --text-muted: rgba(17, 19, 21, 0.7);
+  --accent: #06462d;
+  --accent-soft: rgba(6, 70, 45, 0.1);
+  --line: rgba(17, 19, 21, 0.12);
+  --surface: rgba(255, 255, 255, 0.5);
   --glass-bg: rgba(255, 255, 255, 0.12);
   --glass-highlight: rgba(255, 255, 255, 0.9);
   --glass-midlight: rgba(255, 255, 255, 0.45);
   --glass-shadow: rgba(20, 28, 35, 0.18);
 }
 
+/* ============================================================
+   Backend environment — hard-coded, near-black, electric indigo
+   Palette sampled from the reference motion piece:
+   #000004 base · #0c1848 / #243c6c indigo glow · mono type
+   ============================================================ */
+:root[data-track='backend'] {
+  --page-bg: #000004;
+  --text-primary: #e9edff;
+  --text-muted: rgba(196, 208, 255, 0.66);
+  --accent: #5b8bff;
+  --accent-soft: rgba(91, 139, 255, 0.12);
+  --accent-glow: rgba(36, 60, 108, 0.55);
+  --line: rgba(91, 139, 255, 0.16);
+  --line-strong: rgba(91, 139, 255, 0.34);
+  --surface: rgba(8, 12, 28, 0.72);
+  --surface-solid: #05070f;
+  --glass-bg: rgba(10, 16, 34, 0.42);
+  --glass-highlight: rgba(120, 158, 255, 0.4);
+  --glass-midlight: rgba(91, 139, 255, 0.18);
+  --glass-shadow: rgba(0, 0, 0, 0.6);
+}
+
+:root[data-track='backend'][data-theme='light'] {
+  --page-bg: #f3f7ec;
+  --text-primary: #101310;
+  --text-muted: rgba(16, 19, 16, 0.66);
+  --accent: #06462d;
+  --accent-soft: rgba(6, 70, 45, 0.08);
+  --accent-glow: rgba(6, 70, 45, 0.18);
+  --line: rgba(16, 19, 16, 0.14);
+  --line-strong: rgba(6, 70, 45, 0.32);
+  --surface: rgba(255, 255, 255, 0.86);
+  --surface-solid: #ffffff;
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-highlight: rgba(255, 255, 255, 0.95);
+  --glass-midlight: rgba(6, 70, 45, 0.14);
+  --glass-shadow: rgba(20, 28, 35, 0.12);
+}
+
+/* ============================================================
+   Hub (landing)
+   ============================================================ */
+:root[data-track='hub'] {
+  --page-bg: #050608;
+  --text-primary: #fff;
+  --text-muted: rgba(255, 255, 255, 0.68);
+  --accent: #d9e5c5;
+  --accent-soft: rgba(217, 229, 197, 0.12);
+  --line: rgba(255, 255, 255, 0.12);
+  --surface: rgba(255, 255, 255, 0.03);
+  --glass-bg: rgba(255, 255, 255, 0.01);
+  --glass-highlight: rgba(255, 255, 255, 0.45);
+  --glass-midlight: rgba(255, 255, 255, 0.15);
+  --glass-shadow: rgba(0, 0, 0, 0.3);
+}
+
+:root[data-track='hub'][data-theme='light'] {
+  --page-bg: #eef1f3;
+  --text-primary: #111315;
+  --text-muted: rgba(17, 19, 21, 0.7);
+  --accent: #06462d;
+  --accent-soft: rgba(6, 70, 45, 0.1);
+  --line: rgba(17, 19, 21, 0.12);
+  --surface: rgba(255, 255, 255, 0.5);
+  --glass-bg: rgba(255, 255, 255, 0.12);
+  --glass-highlight: rgba(255, 255, 255, 0.9);
+  --glass-midlight: rgba(255, 255, 255, 0.45);
+  --glass-shadow: rgba(20, 28, 35, 0.18);
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
 * {
   box-sizing: border-box;
 }
 
 html {
   scroll-behavior: smooth;
-  scrollbar-color: rgba(255, 255, 255, 0.36) transparent;
+  scrollbar-color: var(--text-muted) transparent;
   scrollbar-width: thin;
 }
 
@@ -33,6 +129,21 @@ body {
   min-width: 320px;
   overflow-x: hidden;
   background: var(--page-bg);
+  color: var(--text-primary);
+}
+
+.track-shell {
+  position: relative;
+  min-height: 100vh;
+  background: var(--page-bg);
+  color: var(--text-primary);
+  transition: background-color 320ms ease, color 320ms ease;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  letter-spacing: -0.01em;
 }
 
 button,
@@ -44,13 +155,19 @@ a {
   color: inherit;
 }
 
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
 ::selection {
-  color: #050607;
-  background: rgba(255, 255, 255, 0.86);
+  color: var(--page-bg);
+  background: var(--accent);
 }
 
 ::-webkit-scrollbar {
   width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
@@ -59,9 +176,12 @@ a {
 
 ::-webkit-scrollbar-thumb {
   border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.32);
+  background: var(--line-strong, rgba(255, 255, 255, 0.32));
 }
 
+/* ============================================================
+   Liquid glass (frontend environment)
+   ============================================================ */
 .liquid-glass,
 .liquid-glass-strong {
   position: relative;
@@ -112,10 +232,6 @@ a {
   z-index: 1;
 }
 
-.section-anchor {
-  scroll-margin-top: 92px;
-}
-
 @supports not ((backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))) {
   .liquid-glass,
   .liquid-glass-strong {
@@ -128,6 +244,245 @@ a {
   }
 }
 
+/* ============================================================
+   IDE surfaces (backend environment)
+   ============================================================ */
+.panel {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(91, 139, 255, 0.05), transparent 42%),
+    var(--surface);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 24px 70px rgba(0, 0, 0, 0.55);
+}
+
+:root[data-theme='light'] .panel {
+  box-shadow: 0 18px 50px rgba(20, 28, 35, 0.1);
+}
+
+.panel-glow::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(120% 80% at 50% -10%, var(--accent-glow), transparent 60%);
+  opacity: 0.9;
+  mix-blend-mode: screen;
+}
+
+:root[data-theme='light'] .panel-glow::after {
+  mix-blend-mode: multiply;
+  opacity: 0.35;
+}
+
+.ide-grid {
+  background-image:
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(120% 90% at 50% 0%, #000 20%, transparent 78%);
+}
+
+.scanlines::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.03) 0 1px,
+    transparent 1px 3px
+  );
+  opacity: 0.35;
+}
+
+/* ============================================================
+   Custom cursor
+   ============================================================ */
+html[data-custom-cursor='on'],
+html[data-custom-cursor='on'] body,
+html[data-custom-cursor='on'] body *,
+body.custom-cursor-on,
+body.custom-cursor-on * {
+  cursor: none !important;
+}
+
+.cursor-anchor {
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.cursor-jitter {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.cursor-jitter.is-glitching {
+  animation: cursor-glitch 340ms steps(3, end) 1;
+}
+
+.cursor-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  translate: -50% -50%;
+  border: 1px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  box-shadow: 0 0 14px var(--accent-glow, rgba(91, 139, 255, 0.25)), inset 0 0 6px var(--accent-soft);
+  transition: width 170ms var(--ease-out), height 170ms var(--ease-out), opacity 200ms ease;
+  pointer-events: none;
+}
+
+.cursor-cross {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: var(--accent);
+  opacity: 0.42;
+  pointer-events: none;
+}
+
+.cursor-cross--v {
+  width: 1px;
+  height: 9px;
+  translate: -50% -50%;
+}
+
+.cursor-cross--h {
+  width: 9px;
+  height: 1px;
+  translate: -50% -50%;
+}
+
+.cursor-ghost {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 2px;
+  width: 44px;
+  translate: -50% 0;
+  background: var(--accent);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cursor-ghost--a {
+  top: -9px;
+  animation: cursor-ghost 340ms steps(2, end) 1;
+}
+
+.cursor-ghost--b {
+  top: 9px;
+  animation: cursor-ghost 340ms steps(2, end) 1 reverse;
+}
+
+.cursor-jitter.is-stable .cursor-ghost {
+  animation: none;
+}
+
+.cursor-dot {
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: var(--accent);
+  pointer-events: none;
+  will-change: transform;
+}
+
+@keyframes cursor-glitch {
+  0% { transform: translate3d(0, 0, 0) skewX(0); }
+  15% { transform: translate3d(-4px, 2px, 0) skewX(-7deg); }
+  35% { transform: translate3d(5px, -3px, 0) skewX(6deg); }
+  55% { transform: translate3d(-2px, -2px, 0) skewX(0); }
+  75% { transform: translate3d(3px, 1px, 0) skewX(4deg); }
+  100% { transform: translate3d(0, 0, 0) skewX(0); }
+}
+
+@keyframes cursor-ghost {
+  0% { opacity: 0; transform: translateX(-7px) scaleX(1.1); }
+  30% { opacity: 0.9; transform: translateX(-2px) scaleX(0.9); }
+  60% { opacity: 0.45; transform: translateX(6px) scaleX(1.2); }
+  100% { opacity: 0; transform: translateX(0) scaleX(1); }
+}
+
+/* ============================================================
+   Typewriter + misc motion
+   ============================================================ */
+.caret {
+  display: inline-block;
+  width: 0.58ch;
+  height: 1em;
+  margin-left: 0.12ch;
+  translate: 0 0.12em;
+  background: currentColor;
+  animation: caret-blink 1.05s steps(2, start) infinite;
+}
+
+@keyframes caret-blink {
+  50% { opacity: 0; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.9; }
+}
+
+/* project card carousel */
+@keyframes frame-in {
+  from { opacity: 0; filter: blur(7px) saturate(0.9); }
+  to { opacity: 1; filter: blur(0) saturate(1); }
+}
+
+@keyframes frame-bar {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* post comment storm */
+.storm-chip {
+  animation: storm-in 420ms var(--ease-out) both;
+}
+
+@keyframes storm-in {
+  from { opacity: 0; translate: 0 14px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+.section-anchor {
+  scroll-margin-top: 92px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================================
+   Responsive / motion preferences
+   ============================================================ */
 @media (max-width: 600px) {
   .liquid-glass-strong {
     -webkit-backdrop-filter: blur(24px);
@@ -138,5 +493,17 @@ a {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .caret {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }

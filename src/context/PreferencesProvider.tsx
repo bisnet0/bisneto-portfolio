@@ -1,6 +1,4 @@
-import { CssBaseline, ThemeProvider } from '@mui/material'
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
-import createAppTheme from '../theme'
 import {
   PreferencesContext,
   type ColorMode,
@@ -35,18 +33,17 @@ interface PreferencesProviderProps {
   children: ReactNode
 }
 
+/**
+ * Owns theme + language preferences (cookies, system defaults, document side effects).
+ * The MUI theme itself is scoped per environment by <TrackTheme />.
+ */
 const PreferencesProvider = ({ children }: PreferencesProviderProps) => {
   const [mode, setMode] = useState<ColorMode>(getInitialMode)
   const [language, setLanguage] = useState<Language>(getInitialLanguage)
-  const theme = useMemo(() => createAppTheme(mode), [mode])
 
   useEffect(() => {
     document.documentElement.dataset.theme = mode
     document.documentElement.style.colorScheme = mode
-    document.querySelector('meta[name="theme-color"]')?.setAttribute(
-      'content',
-      mode === 'dark' ? '#030405' : '#eef1f3',
-    )
   }, [mode])
 
   useEffect(() => {
@@ -61,14 +58,11 @@ const PreferencesProvider = ({ children }: PreferencesProviderProps) => {
 
   useEffect(() => {
     document.documentElement.lang = language === 'pt' ? 'pt-BR' : 'en'
-    document.title = language === 'pt'
-      ? 'Henrique Bisneto | Engenheiro de Software'
-      : 'Henrique Bisneto | Software Engineer'
     document.querySelector('meta[name="description"]')?.setAttribute(
       'content',
       language === 'pt'
-        ? 'Portfólio de engenharia de software de Henrique Bisneto: produtos full stack, integrações, dados e entrega.'
-        : "Henrique Bisneto's software engineering portfolio: full-stack products, integrations, data and delivery.",
+        ? 'Portfólio de engenharia de software de Henrique Bisneto: ambientes de frontend e backend com projetos, integrações e dados.'
+        : "Henrique Bisneto's software engineering portfolio: frontend and backend environments with projects, integrations and data.",
     )
   }, [language])
 
@@ -88,14 +82,12 @@ const PreferencesProvider = ({ children }: PreferencesProviderProps) => {
     })
   }
 
-  return (
-    <PreferencesContext.Provider value={{ mode, language, toggleMode, toggleLanguage }}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        {children}
-      </ThemeProvider>
-    </PreferencesContext.Provider>
+  const value = useMemo(
+    () => ({ mode, language, toggleMode, toggleLanguage }),
+    [mode, language],
   )
+
+  return <PreferencesContext.Provider value={value}>{children}</PreferencesContext.Provider>
 }
 
 export default PreferencesProvider

@@ -1,44 +1,97 @@
 import { createTheme, type PaletteMode } from '@mui/material/styles'
+import type { TrackId } from './content/tracks'
 
-const createAppTheme = (mode: PaletteMode) => createTheme({
-  palette: {
-    mode,
-    background: {
-      default: mode === 'dark' ? '#030405' : '#eef1f3',
-      paper: mode === 'dark' ? 'rgba(7, 9, 11, 0.72)' : 'rgba(255, 255, 255, 0.72)',
+interface TrackScale {
+  bg: string
+  paper: string
+  text: string
+  muted: string
+  accent: string
+}
+
+const scales: Record<TrackId, Record<PaletteMode, TrackScale>> = {
+  frontend: {
+    dark: {
+      bg: '#030405',
+      paper: 'rgba(7, 9, 11, 0.72)',
+      text: '#ffffff',
+      muted: 'rgba(255, 255, 255, 0.72)',
+      accent: '#d9e5c5',
     },
-    primary: {
-      main: mode === 'dark' ? '#ffffff' : '#111315',
-    },
-    text: {
-      primary: mode === 'dark' ? '#ffffff' : '#111315',
-      secondary: mode === 'dark' ? 'rgba(255,255,255,0.72)' : 'rgba(17,19,21,0.68)',
+    light: {
+      bg: '#eef1f3',
+      paper: 'rgba(255, 255, 255, 0.72)',
+      text: '#111315',
+      muted: 'rgba(17, 19, 21, 0.68)',
+      accent: '#06462d',
     },
   },
-  typography: {
-    fontFamily: 'Sora, sans-serif',
-    h1: { fontFamily: 'Instrument Serif, serif', fontStyle: 'italic' },
-    h2: { fontFamily: 'Instrument Serif, serif', fontStyle: 'italic' },
-    h3: { fontFamily: 'Instrument Serif, serif', fontStyle: 'italic' },
-    button: { fontFamily: 'Sora, sans-serif', textTransform: 'none' },
+  backend: {
+    dark: {
+      bg: '#000004',
+      paper: 'rgba(6, 9, 22, 0.78)',
+      text: '#e9edff',
+      muted: 'rgba(196, 208, 255, 0.66)',
+      accent: '#5b8bff',
+    },
+    light: {
+      bg: '#f3f7ec',
+      paper: 'rgba(255, 255, 255, 0.86)',
+      text: '#101310',
+      muted: 'rgba(16, 19, 16, 0.68)',
+      accent: '#06462d',
+    },
   },
-  shape: {
-    borderRadius: 20,
+  hub: {
+    dark: {
+      bg: '#030405',
+      paper: 'rgba(7, 9, 11, 0.72)',
+      text: '#ffffff',
+      muted: 'rgba(255, 255, 255, 0.72)',
+      accent: '#ffffff',
+    },
+    light: {
+      bg: '#eef1f3',
+      paper: 'rgba(255, 255, 255, 0.72)',
+      text: '#111315',
+      muted: 'rgba(17, 19, 21, 0.68)',
+      accent: '#111315',
+    },
   },
-  components: {
-    MuiButtonBase: {
-      defaultProps: {
-        disableRipple: true,
+}
+
+const createAppTheme = (mode: PaletteMode, track: TrackId = 'frontend') => {
+  const scale = scales[track][mode]
+  const isBackend = track === 'backend'
+  const displayFont = isBackend
+    ? '"JetBrains Mono", ui-monospace, SFMono-Regular, monospace'
+    : 'Instrument Serif, serif'
+
+  return createTheme({
+    palette: {
+      mode,
+      background: { default: scale.bg, paper: scale.paper },
+      primary: { main: scale.accent },
+      text: { primary: scale.text, secondary: scale.muted },
+    },
+    typography: {
+      fontFamily: 'Sora, sans-serif',
+      h1: { fontFamily: displayFont, fontStyle: isBackend ? 'normal' : 'italic' },
+      h2: { fontFamily: displayFont, fontStyle: isBackend ? 'normal' : 'italic' },
+      h3: { fontFamily: displayFont, fontStyle: isBackend ? 'normal' : 'italic' },
+      button: {
+        fontFamily: isBackend ? '"JetBrains Mono", monospace' : 'Sora, sans-serif',
+        textTransform: 'none',
       },
     },
-    MuiCssBaseline: {
-      styleOverrides: {
-        body: {
-          backgroundColor: mode === 'dark' ? '#030405' : '#eef1f3',
-        },
+    shape: { borderRadius: isBackend ? 8 : 20 },
+    components: {
+      MuiButtonBase: { defaultProps: { disableRipple: true } },
+      MuiCssBaseline: {
+        styleOverrides: { body: { backgroundColor: scale.bg } },
       },
     },
-  },
-})
+  })
+}
 
 export default createAppTheme

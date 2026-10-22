@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# local references (videos/design references kept out of the deploy)
+refs/

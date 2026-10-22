@@ -9,19 +9,25 @@
     <meta property="og:description" content="Full-stack products, integrations, data and delivery." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.henriquebisneto.com.br" />
-    <meta property="og:image" content="https://www.henriquebisneto.com.br/video/me_coding_poster.webp" />
+    <meta property="og:image" content="https://www.henriquebisneto.com.br/me/nocanva.png" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="canonical" href="https://www.henriquebisneto.com.br" />
     <link rel="icon" href="/src/assets/images/favicon.ico" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet" />
     <script>
       (function () {
         var match = document.cookie.match(/(?:^|; )portfolio-theme=(light|dark)/);
         var mode = match ? match[1] : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
         document.documentElement.dataset.theme = mode;
         document.documentElement.style.colorScheme = mode;
+        var path = window.location.pathname.replace(/\/+$/, '');
+        var track = path === '/backend' ? 'backend' : path === '/frontend' ? 'frontend' : 'hub';
+        document.documentElement.dataset.track = track;
+        if (track === 'backend') {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', mode === 'dark' ? '#000004' : '#f3f7ec');
+        }
       })();
     </script>
     <title>Henrique Bisneto | Software Engineer</title>
