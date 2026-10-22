@@ -361,6 +361,7 @@ export const projects: Project[] = [
     cover: '/projects/riftshield/cover.webp',
     links: [
       { label: 'LinkedIn', url: 'https://www.linkedin.com/posts/bisnet0_cybersecurity-yolo-langgraph-ugcPost-7486203782599524354-6pLZ/', type: 'case' },
+      { label: 'GitHub', url: 'https://github.com/bisnet0/RiftShield', type: 'code' },
     ],
   },
   {
@@ -377,7 +378,7 @@ export const projects: Project[] = [
     cover: '/projects/episcope/cover.webp',
     links: [
       { label: 'LinkedIn', url: 'https://www.linkedin.com/posts/bisnet0_artificialintelligence-machinelearning-web3-ugcPost-7462300956521590784-Z34B/', type: 'case' },
-      { label: 'GitHub', url: 'https://github.com/bisnet0/EpiScope-dapp', type: 'code' },
+      { label: 'GitHub', url: 'https://github.com/bisnet0/EpiScope---Disease-Data-Analyzer', type: 'code' },
     ],
   },
 ]
