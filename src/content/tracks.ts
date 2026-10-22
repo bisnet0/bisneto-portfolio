@@ -123,6 +123,22 @@ const frontend: TrackContent = {
       },
       'Ferramenta · templates',
     ),
+    bySlug(
+      'portal-do-cliente',
+      {
+        pt: 'App white-label: cada escritório com sua identidade, chat em tempo real e notificação que chega na hora certa.',
+        en: 'White-label app: each firm with its own identity, real-time chat and notifications that land at the right moment.',
+      },
+      'Mobile · white-label',
+    ),
+    bySlug(
+      'riftshield',
+      {
+        pt: 'Dashboard de modelagem de ameaças em React 19 + Chakra UI: diagrama, matriz STRIDE, risco e exportação.',
+        en: 'Threat modeling dashboard in React 19 + Chakra UI: diagram, STRIDE matrix, risk and export.',
+      },
+      'React 19 · Chakra',
+    ),
   ],
 }
 
@@ -219,6 +235,30 @@ const backend: TrackContent = {
         en: 'The service layer behind the campus dashboard: Node routes, SQL Server queries and MongoDB caching.',
       },
       'Full stack · API',
+    ),
+    bySlug(
+      'portal-do-cliente',
+      {
+        pt: 'Serviços por trás do app: fila com retry, reconciliação de push, Redis no caminho curto e Socket.IO com log rastreável.',
+        en: 'Services behind the app: retry queue, push reconciliation, Redis on the short path and traced Socket.IO.',
+      },
+      'Node · Redis · filas',
+    ),
+    bySlug(
+      'riftshield',
+      {
+        pt: 'FastAPI com YOLOv8 customizado, agente LangGraph de 11 ferramentas e RAG multilíngue sobre FAISS.',
+        en: 'FastAPI with a custom YOLOv8, an 11-tool LangGraph agent and multilingual RAG over FAISS.',
+      },
+      'FastAPI · YOLO',
+    ),
+    bySlug(
+      'episcope',
+      {
+        pt: 'Modelo exportado para execução determinística dentro da Cartesi Machine, com notices servidas por GraphQL.',
+        en: 'Model exported for deterministic execution inside the Cartesi Machine, with notices served over GraphQL.',
+      },
+      'ML · Web3',
     ),
   ],
 }

@@ -31,6 +31,7 @@ const SiteNav = ({ track }: SiteNavProps) => {
     ? []
     : [
         { label: language === 'pt' ? 'Projetos' : 'Projects', href: '#projects' },
+        { label: language === 'pt' ? 'Credenciais' : 'Credentials', href: '#credentials' },
         { label: language === 'pt' ? 'Contato' : 'Contact', href: '#contact' },
       ]
 

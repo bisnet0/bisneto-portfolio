@@ -45,6 +45,8 @@ src/
 │  ├─ TrackTheme/                 # aplica data-track + ThemeProvider por rota
 │  ├─ SiteNav/                    # navegação entre ambientes + idioma/tema
 │  ├─ TrackHero/                  # foto, typing de código, colagem de fragmentos, rede neural
+│  ├─ Credentials/                # premiações, certificados e estudos (bordas pulsando)
+│  ├─ GalleryDialog/              # lightbox compartilhado (projetos + credenciais)
 │  ├─ ProjectDeck/                # deck → cascata (motor de scroll) + post do canto oposto
 │  ├─ ProjectCard/                # card do projeto (glass ou IDE) com carrossel automático
 │  ├─ PostPanel/                  # post real (LinkedIn/GitHub) do projeto, com métricas reais
@@ -91,16 +93,28 @@ Os tokens vivem em `global.css` sob `:root[data-track='...'][data-theme='...']`;
 5. **Carrossel:** cada card cicla as próprias capturas a cada 2,4 s (crossfade + contador `04/13` + barra de progresso), pré-carrega o próximo frame e **pausa no hover** do card ou pelo botão de pausa.
 6. **Clique em um card da fila** → scroll suave até o slot daquele projeto (`jumpTo`); clique no card já pousado abre a galeria.
 7. **Fallback:** abaixo de 1024px ou com `prefers-reduced-motion` o componente troca para uma cascata estática (card + post empilhados, storm limitado a 3 chips dentro do bloco).
+8. **Fila com mais de 6 cards:** o deck passa a usar duas fileiras de `ceil(n/2)` cards (backend tem 8 → 2×4) em vez de espremer oito miniaturas numa linha.
 
 Alturas: seção = `100vh + (n × 95vh + 52vh)`; o card mede a altura real via `ResizeObserver` para calcular `rowHeight` e a âncora da câmera (centraliza quando cabe, encosta no topo quando o viewport é baixo).
 
 ## Conteúdo
 
-- 8 cases reais em `portfolio.ts`, cada um com `slug`, período, descrição, stack, galeria e links.
+- 11 cases reais em `portfolio.ts`, cada um com `slug`, período, descrição, stack, galeria e links.
 - `tracks.ts` define **quais** projetos aparecem em cada ambiente, com uma linha de foco própria (`focus`) e um selo (`highlight`):
-  - Frontend (4): Gestão de Polos, Tutoriais Medicina/Escola Nobre, Igreja Renova-me, Customizador de Portal.
-  - Backend (5): Biometria Facial, Hub de Eventos Nobre, Aniversariantes do Mês, Análise Preditiva Tributária, Gestão de Polos (camada de serviço).
+  - Frontend (6): Gestão de Polos, Tutoriais Medicina/Escola Nobre, Igreja Renova-me, Customizador de Portal, Portal do Cliente (app white-label), RiftShield (dashboard React 19).
+  - Backend (8): Biometria Facial, Hub de Eventos Nobre, Aniversariantes do Mês, Análise Preditiva Tributária, Gestão de Polos (serviço), Portal do Cliente (filas/Redis/Socket.IO), RiftShield (FastAPI/YOLOv8/LangGraph), EpiScope (ML + Cartesi).
+- `credentials.ts` guarda três coleções: `awards` (1º lugar Cartesi/UFBA e 2º lugar BYTECRAFT), `certificates` (Blockchain/Web3/Cartesi, Java completo, Reprograme-se, Trilhando Carreiras, TCC, Hackathon FIAP) e `studies` (AWS NER/VoC, RabbitMQ + META API, Cartesi RISC-V).
 - Tudo bilíngue (`pt` / `en`); a troca de idioma anima de novo o typing.
+
+## Seção de credenciais
+
+`Credentials` aparece depois do deck, no fim das duas trilhas, em três blocos:
+
+- **Premiações** — dois cards grandes (`award-card--gold` / `award-card--silver`) com badge de 1º/2º lugar e borda pulsando em ouro ou prata (`pulse-gold`, `pulse-silver`).
+- **Certificados** — grid de 6 cards com ícone, miniatura e descrição; borda pulsando em azul (`pulse-blue`).
+- **Estudos** — 3 cards de pesquisa aplicada com link para o post.
+
+Qualquer card abre o `GalleryDialog` compartilhado (imagens, thumbnails, setas e Esc), que também atende aos projetos. Todas as animações são desligadas por `prefers-reduced-motion`.
 
 ## Micro-interações
 
@@ -144,7 +158,10 @@ npm run deploy   # Build + publicação em gh-pages
 - Canvas neural renderizando (~1% de pixels pintados com nós + conexões).
 - Deck na base: em 1440×900 a fila fica com topo em y≈697 e base em 894–901 px (viewport 900), começando em `x=468` — sem sobreposição com a rádio (verificado por interseção de retângulos: `overlap: false`).
 - Hover no deck: card em `matrix(1.22, 0, 0, 1.22, 0, -26)` e os demais com `blur(3px) saturate(0.75)` / `opacity .55`.
-- Posts com dados reais: 5 posts do LinkedIn (22/10/12/5/11 comentários declarados, 10/6/6/3/6 capturados, datas 22/01/2025, 03/10/2024, 19/11/2024, 07/08/2024, 20/07/2024) + 3 repositórios com linguagem e último push reais.
+- Posts com dados reais: 8 posts do LinkedIn (22/10/12/5/11/11/8/3 comentários declarados; 10/6/6/3/6/5/7/2 capturados) + 3 repositórios com linguagem e último push reais.
+- Novos cases: Portal do Cliente, RiftShield e EpiScope com capa WebP e 7–8 frames de galeria cada (vídeos-fonte movidos para `refs/media/`, fora do deploy).
+- Credenciais: 2 premiações, 6 certificados e 3 estudos renderizados; animações `pulse-gold`, `pulse-silver` e `pulse-blue` confirmadas por `getComputedStyle`; galeria abre com título e imagens corretos.
+- Deck com 8 cards verificado em duas fileiras (topo 471 px, segunda fileira 686 px em 1440×900) sem sobrepor a rádio (x inicial 468 px).
 - Uma única instância de canvas por página com `position: fixed` (rede neural global) e marca da navbar apontando para `/me/nocanva.webp`.
 - Botão "Voltar ao topo" aparecendo após scroll e levando `scrollY` a 0 no clique.
 - Player expondo 6 controles (Tocar, Faixa anterior, Parar, Próxima faixa, Silenciar, Sons de interface).
@@ -157,7 +174,8 @@ npm run deploy   # Build + publicação em gh-pages
 ## Pendências conhecidas
 
 - Code splitting: o bundle principal passa de 500 kB (aviso do Vite). Candidato natural: separar MUI e as rotas com `React.lazy`.
-- Imagens da galeria em `public/projects/*.png` somam ~40 MB; converter para WebP reduziria o deploy.
+- Imagens da galeria antiga em `public/projects/*.png` somam ~40 MB; converter para WebP reduziria o deploy (as novas pastas já são WebP).
+- O LinkedIn limita o guest view e às vezes exige login: em uma segunda passada os comentários dos 3 posts novos foram capturados, mas rodadas repetidas podem ser bloqueadas.
 - A seção pessoal (posts, imagens e o vídeo antigo) ainda não existe; os vídeos estão em `refs/video/` e `refs/` está no `.gitignore`.
 - Os comentários são reais, mas o LinkedIn limita o guest view (ex.: 10 de 22). Para capturar a thread inteira é preciso estar logado; os dados vivem em `src/content/postComments.ts` e podem ser completados manualmente.
 - O fade do post pode ser afinado em `ProjectDeck` (`reveal` window) e o deslocamento da fila em `safeLeft`.

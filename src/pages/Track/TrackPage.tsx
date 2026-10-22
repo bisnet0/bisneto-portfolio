@@ -1,5 +1,6 @@
 import { Box } from '@mui/material'
 import { useCallback, useEffect, useState } from 'react'
+import Credentials from '../../components/Credentials/Credentials'
 import ProjectDeck from '../../components/ProjectDeck/ProjectDeck'
 import ProjectGalleryDialog from '../../components/ProjectGallery/ProjectGalleryDialog'
 import NeuralField from '../../components/NeuralField/NeuralField'
@@ -50,6 +51,7 @@ const TrackPage = ({ track }: TrackPageProps) => {
           onContact={() => scrollToId('contact')}
         />
         <ProjectDeck track={track} content={content} onOpen={setGalleryIndex} />
+        <Credentials track={track} />
         <TrackContact track={track} content={content} />
       </Box>
 

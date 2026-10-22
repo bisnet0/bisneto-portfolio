@@ -321,6 +321,52 @@ export const projects: Project[] = [
       { label: 'GitHub', url: 'https://github.com/bisnet0/DataScience', type: 'code' },
     ],
   },
+  {
+    slug: 'portal-do-cliente',
+    name: { pt: 'Portal do Cliente (ContaGou)', en: 'Client Portal (ContaGou)' },
+    period: { pt: 'app em produção · out. 2026', en: 'live app · Oct 2026' },
+    description: {
+      pt: 'App mobile white-label para os clientes das contabilidades: uma build por escritório com cores, logo e ícone próprios, notificações push com fila e reconciliação, chat em tempo real no estilo WhatsApp e cache no Redis.',
+      en: 'White-label mobile app for accounting firm clients: one build per firm with its own colors, logo and icon, push notifications with retry queue and delivery reconciliation, WhatsApp-style real-time chat and Redis caching.',
+    },
+    technologies: ['React Native', 'Expo', 'TypeScript', 'Node.js', 'MongoDB', 'Redis', 'Socket.IO'],
+    images: ['/projects/portal-do-cliente/01.webp', '/projects/portal-do-cliente/02.webp', '/projects/portal-do-cliente/03.webp', '/projects/portal-do-cliente/04.webp', '/projects/portal-do-cliente/05.webp', '/projects/portal-do-cliente/06.webp', '/projects/portal-do-cliente/07.webp'],
+    cover: '/projects/covers/portal-do-cliente.webp',
+    links: [
+      { label: 'LinkedIn', url: 'https://www.linkedin.com/posts/bisnet0_reactnative-expo-nodejs-ugcPost-7514118462856933376-4hoB/', type: 'case' },
+    ],
+  },
+  {
+    slug: 'riftshield',
+    name: { pt: 'RiftShield', en: 'RiftShield' },
+    period: { pt: 'Hackathon FIAP Software Security · jul. 2026', en: 'FIAP Software Security Hackathon · Jul 2026' },
+    description: {
+      pt: 'Plataforma de modelagem de ameaças: um YOLOv8 customizado lê diagramas de arquitetura, o agente LangGraph orquestra STRIDE, RAG e simulação de ataques, e o laudo sai em JSON, CSV, Excel e PDF bilíngue.',
+      en: 'Threat modeling platform: a custom YOLOv8 reads architecture diagrams, a LangGraph agent orchestrates STRIDE, RAG and attack simulation, and the report ships as bilingual JSON, CSV, Excel and PDF.',
+    },
+    technologies: ['FastAPI', 'YOLOv8', 'LangGraph', 'RAG · FAISS', 'React 19', 'Chakra UI', 'MongoDB', 'Docker'],
+    images: ['/projects/riftshield/01.webp', '/projects/riftshield/02.webp', '/projects/riftshield/03.webp', '/projects/riftshield/04.webp', '/projects/riftshield/05.webp', '/projects/riftshield/06.webp', '/projects/riftshield/07.webp', '/projects/riftshield/08.webp'],
+    cover: '/projects/covers/riftshield.webp',
+    links: [
+      { label: 'LinkedIn', url: 'https://www.linkedin.com/posts/bisnet0_cybersecurity-yolo-langgraph-ugcPost-7486203782599524354-6pLZ/', type: 'case' },
+    ],
+  },
+  {
+    slug: 'episcope',
+    name: { pt: 'EpiScope', en: 'EpiScope' },
+    period: { pt: 'Pós-graduação em IA · 2025–2026', en: 'AI postgraduate · 2025–2026' },
+    description: {
+      pt: 'Analisador de arboviroses com Machine Learning e IA generativa, com backend descentralizado rodando dentro da Cartesi Machine (RISC-V): o diagnóstico sai verificável, transparente e imutável sobre rollups.',
+      en: 'Arbovirus analyzer powered by machine learning and generative AI, with a decentralized backend running inside the Cartesi Machine (RISC-V): diagnostics come out verifiable, transparent and immutable through rollups.',
+    },
+    technologies: ['Python', 'Flask', 'GraphQL', 'Cartesi Rollups', 'Blockchain', 'scikit-learn', 'Gemini'],
+    images: ['/projects/episcope/01.webp', '/projects/episcope/02.webp', '/projects/episcope/03.webp', '/projects/episcope/04.webp', '/projects/episcope/05.webp', '/projects/episcope/06.webp', '/projects/episcope/07.webp', '/projects/episcope/08.webp'],
+    cover: '/projects/covers/episcope.webp',
+    links: [
+      { label: 'LinkedIn', url: 'https://www.linkedin.com/posts/bisnet0_artificialintelligence-machinelearning-web3-ugcPost-7462300956521590784-Z34B/', type: 'case' },
+      { label: 'GitHub', url: 'https://github.com/bisnet0/EpiScope-dapp', type: 'code' },
+    ],
+  },
 ]
 
 export const cvUrl = 'https://drive.usercontent.google.com/download?id=1jAOuBD5NmBkF9Sye-MWPo-ao_j3pWUq9&export=download&authuser=0'

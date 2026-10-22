@@ -29,7 +29,11 @@ interface DeckMetrics {
   marginX: number
   deckCardW: number
   deckScale: number
-  deckY: number
+  deckCardH: number
+  deckRowGap: number
+  deckBottom: number
+  perRow: number
+  rows: number
   rowHeight: number
   padTop: number
   gap: number
@@ -41,7 +45,7 @@ interface DeckTiming {
 }
 
 interface DeckLayout {
-  slots: Array<{ x: number; y: number; deckX: number; tilt: number; postX: number; postW: number }>
+  slots: Array<{ x: number; y: number; deckX: number; deckY: number; tilt: number; postX: number; postW: number }>
   timings: DeckTiming[]
   camInputs: number[]
   camOutputs: number[]
@@ -57,12 +61,14 @@ const LAND_RATIO = 0.72
 const TAIL = 0.55
 
 const buildLayout = (metrics: DeckMetrics, count: number): DeckLayout => {
-  const { vw, vh, cardW, cardH, marginX, deckCardW, rowHeight, padTop, gap } = metrics
-  const deckRowW = deckCardW * count
+  const { vw, vh, cardW, cardH, marginX, deckCardW, rowHeight, padTop, gap, perRow, rows, deckCardH, deckRowGap, deckBottom } = metrics
+  const deckRowW = deckCardW * perRow
   // Keep the row clear of the floating radio at the bottom-left corner.
   const safeLeft = vw >= 1280 ? 468 : 236
   const centered = (vw - deckRowW) / 2
   const deckLeft = Math.min(Math.max(centered, safeLeft), Math.max(24, vw - deckRowW - 24))
+  const deckBlockH = rows * deckCardH + (rows - 1) * deckRowGap
+  const deckTop = deckBottom - deckBlockH
   const span = (1 - P_START - 0.02) / count
   const innerW = vw - marginX * 2
 
@@ -74,7 +80,13 @@ const buildLayout = (metrics: DeckMetrics, count: number): DeckLayout => {
     const postX = isLeft ? marginX + cardW + gap : marginX
     const postW = innerW - cardW - gap
 
-    return { x, y, deckX: deckLeft + index * deckCardW, tilt, postX, postW }
+    // Deck rows: up to 6 cards in a single row, more than that splits into two rows.
+    const column = index % perRow
+    const deckRow = Math.floor(index / perRow)
+    const deckX = deckLeft + column * deckCardW
+    const deckY = deckTop + deckRow * (deckCardH + deckRowGap)
+
+    return { x, y, deckX, deckY, tilt, postX, postW }
   })
 
   const timings: DeckTiming[] = slots.map((_, index) => ({
@@ -131,7 +143,7 @@ const DeckCard = ({
   const t = useTransform(progress, [timing.start, timing.end], [0, 1])
   const eased = useTransform(t, easeOutCubic)
   const x = useTransform(() => (1 - eased.get()) * (slot.deckX - slot.x))
-  const y = useTransform(() => (1 - eased.get()) * (metrics.deckY + camera.get() - slot.y))
+  const y = useTransform(() => (1 - eased.get()) * (slot.deckY + camera.get() - slot.y))
   const scale = useTransform(() => metrics.deckScale + (1 - metrics.deckScale) * eased.get())
   const rotate = useTransform(() => slot.tilt * (1 - eased.get()))
 
@@ -300,20 +312,23 @@ const ProjectDeck = ({ track, content, onOpen }: ProjectDeckProps) => {
       const marginX = Math.max(24, Math.min(96, vw * 0.055))
       const gap = Math.max(20, Math.round(vw * 0.02))
       const safeLeft = vw >= 1280 ? 468 : 236
+      const perRow = count > 6 ? Math.ceil(count / 2) : count
+      const rows = Math.ceil(count / perRow)
       const deckCardW = Math.min(
-        (vw - marginX * 2 - gap * (count - 1)) / count,
-        (vw - safeLeft - 24) / count,
+        (vw - marginX * 2 - gap * (perRow - 1)) / perRow,
+        (vw - safeLeft - 24) / perRow,
         210,
       )
       const deckScale = deckCardW / cardW
       const deckCardH = cardH * deckScale
-      // Deck row lives at the very bottom of the stage so it never covers a landed card.
-      const deckY = vh - deckCardH - 26
+      const deckRowGap = 12
+      // The deck block hugs the bottom of the stage so it never covers a landed card.
+      const deckBottom = vh - 26
       const rowHeight = Math.max(cardH + vh * 0.16, vh * 0.8)
       const padTop = vh * 0.1
 
       setMetrics((current) => {
-        const next: DeckMetrics = { vw, vh, cardW, cardH, marginX, deckCardW, deckScale, deckY, rowHeight, padTop, gap }
+        const next: DeckMetrics = { vw, vh, cardW, cardH, marginX, deckCardW, deckScale, deckCardH, deckRowGap, deckBottom, perRow, rows, rowHeight, padTop, gap }
         if (current && current.vw === next.vw && current.vh === next.vh && current.cardH === next.cardH) return current
         return next
       })
