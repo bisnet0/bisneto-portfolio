@@ -9,7 +9,30 @@ import VolumeUpRoundedIcon from '@mui/icons-material/VolumeUpRounded'
 import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { tracklist } from '../../content/tracklist'
+/**
+ * Playlist is discovered from the file system at build/dev time, so dropping new
+ * audio in src/assets/audio/soft-disco is enough — no generated file, no race.
+ */
+const AUDIO_FILES = import.meta.glob('../../assets/audio/soft-disco/*.{mp3,m4a,ogg,wav,aac,flac}', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+}) as Record<string, string>
+
+const displayName = (path: string) => {
+  const base = path.split('/').pop() ?? path
+  return base
+    .replace(/\.[^.]+$/, '')
+    .replace(/[-_]?spotdown(\.org)?/gi, '')
+    .replace(/[-_]?www\.[a-z0-9.-]+/gi, '')
+    .replace(/_+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim() || base
+}
+
+const tracklist = Object.entries(AUDIO_FILES)
+  .map(([path, src]) => ({ title: displayName(path), src, path }))
+  .sort((a, b) => a.path.localeCompare(b.path, 'pt-BR'))
 import { usePreferences } from '../../context/preferences'
 import { sfx } from '../../lib/sfx'
 

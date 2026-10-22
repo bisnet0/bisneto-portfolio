@@ -14,6 +14,7 @@ export default defineConfig({
       ignored: [
         '**/refs/**',
         '**/dist/**',
+        '**/src/assets/audio/**',
         '**/public/**/*.{mp3,m4a,wav,ogg,flac,aac,mp4,mov,webm,mkv,pdf,zip}',
       ],
     },
