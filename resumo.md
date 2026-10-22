@@ -116,6 +116,8 @@ Alturas: seção = `100vh + (n × 95vh + 52vh)`; o card mede a altura real via `
 
 Qualquer card abre o `GalleryDialog` compartilhado (imagens, thumbnails, setas e Esc), que também atende aos projetos. Todas as animações são desligadas por `prefers-reduced-motion`.
 
+Todo card com mais de uma imagem usa o `AutoCarousel` (mesmo comportamento dos projetos): crossfade a cada 2,4 s, contador `01/04`, barra de progresso, pausa no hover e botão de pausa fixa; só cicla quando o card está pelo menos 20% visível (`IntersectionObserver`).
+
 ## Micro-interações
 
 - **Typing:** `TypingText` digita as linhas de "código" do hero e a descrição de cada card ao pousar; texto completo exposto em `.sr-only`. Cada caractere dispara um clique curto sintetizado (`sfx.key`), com throttle de 22 ms.

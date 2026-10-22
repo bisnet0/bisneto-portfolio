@@ -4,6 +4,7 @@ import { useState } from 'react'
 import type { Award, Credential } from '../../content/credentials'
 import { awards, certificates, studies } from '../../content/credentials'
 import { usePreferences } from '../../context/preferences'
+import AutoCarousel from '../AutoCarousel/AutoCarousel'
 import GalleryDialog from '../GalleryDialog/GalleryDialog'
 
 interface CredentialsProps {
@@ -56,19 +57,20 @@ const Credentials = ({ track }: CredentialsProps) => {
           borderRadius: isBackend ? '12px' : '1.6rem',
         }}
       >
-        <Box
-          component="button"
-          type="button"
-          onClick={() => openCredential(award)}
-          aria-label={award.title[language]}
-          sx={{ position: 'relative', display: 'block', width: '100%', aspectRatio: '16 / 9', border: 0, p: 0, cursor: 'pointer', backgroundColor: '#05070b' }}
-        >
-          <Box component="img" src={award.images[0]} alt="" loading="lazy" decoding="async" sx={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          <Box sx={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.75) 100%)' }} />
+        <Box sx={{ position: 'relative' }}>
+          <AutoCarousel
+            images={award.images}
+            alt={award.title[language]}
+            aspectRatio="16 / 9"
+            onActivate={() => openCredential(award)}
+          />
+          <Box sx={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none', background: 'linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.75) 100%)' }} />
           <Box
             className={`rank-badge ${isGold ? 'rank-badge--gold' : 'rank-badge--silver'}`}
             sx={{
               position: 'absolute',
+              zIndex: 4,
+              pointerEvents: 'none',
               top: 14,
               left: 14,
               display: 'flex',
@@ -149,17 +151,18 @@ const Credentials = ({ track }: CredentialsProps) => {
       className={`${surface} cert-card`}
       sx={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', borderRadius: isBackend ? '10px' : '1.2rem' }}
     >
-      <Box
-        component="button"
-        type="button"
-        onClick={() => openCredential(item)}
-        aria-label={item.title[language]}
-        sx={{ position: 'relative', display: 'block', width: '100%', aspectRatio: '16 / 10', border: 0, p: 0, cursor: 'pointer', backgroundColor: '#05070b' }}
-      >
-        <Box component="img" src={item.images[0]} alt="" loading="lazy" decoding="async" sx={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+      <Box sx={{ position: 'relative' }}>
+        <AutoCarousel
+          images={item.images}
+          alt={item.title[language]}
+          aspectRatio="16 / 10"
+          onActivate={() => openCredential(item)}
+        />
         <Box
           sx={{
             position: 'absolute',
+            zIndex: 4,
+            pointerEvents: 'none',
             top: 10,
             right: 10,
             display: 'grid',
@@ -201,15 +204,12 @@ const Credentials = ({ track }: CredentialsProps) => {
       className={`${surface} study-card`}
       sx={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', borderRadius: isBackend ? '10px' : '1.3rem' }}
     >
-      <Box
-        component="button"
-        type="button"
-        onClick={() => openCredential(item)}
-        aria-label={item.title[language]}
-        sx={{ position: 'relative', display: 'block', width: '100%', aspectRatio: '16 / 9', border: 0, p: 0, cursor: 'pointer', backgroundColor: '#05070b' }}
-      >
-        <Box component="img" src={item.images[0]} alt="" loading="lazy" decoding="async" sx={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-      </Box>
+      <AutoCarousel
+        images={item.images}
+        alt={item.title[language]}
+        aspectRatio="16 / 9"
+        onActivate={() => openCredential(item)}
+      />
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.8, p: 1.9 }}>
         <Typography className="mono" sx={{ color: 'var(--accent)', fontSize: '0.54rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
           {item.issuer[language]}
