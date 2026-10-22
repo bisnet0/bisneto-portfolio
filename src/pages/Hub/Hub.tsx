@@ -1,21 +1,21 @@
-import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded'
 import ArrowOutwardRoundedIcon from '@mui/icons-material/ArrowOutwardRounded'
 import { Box, Button, Stack, Typography } from '@mui/material'
-import { motion, useReducedMotion } from 'framer-motion'
+import { useReducedMotion } from 'framer-motion'
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import AutoCarousel from '../../components/AutoCarousel/AutoCarousel'
 import GalleryDialog from '../../components/GalleryDialog/GalleryDialog'
 import NeuralField from '../../components/NeuralField/NeuralField'
+import ProjectDeck from '../../components/ProjectDeck/ProjectDeck'
 import SiteNav from '../../components/SiteNav/SiteNav'
 import { TrackFooter } from '../../components/TrackContact/TrackContact'
 import TrackTheme from '../../components/TrackTheme/TrackTheme'
 import TypingText from '../../components/TypingText/TypingText'
 import { githubUrl, linkedInUrl } from '../../content/portfolio'
-import { hubCopy, hubProjects, tracks } from '../../content/tracks'
+import { hubCopy, hubDeck, tracks } from '../../content/tracks'
 import { usePreferences } from '../../context/preferences'
 
-const SWITCH_MS = 7000
+/** Slow on purpose: the persona swap is a glitch, not a slideshow. */
+const SWITCH_MS = 12000
 
 interface GalleryState {
   title: string
@@ -24,12 +24,46 @@ interface GalleryState {
   link?: { label: string; url: string }
 }
 
+/**
+ * Words alternate between the frontend (serif italic) and backend (mono) typefaces,
+ * so a single sentence looks like a broken render — the whole point of the glitch.
+ */
+const GlitchWords = ({ text, primary }: { text: string; primary: 'frontend' | 'backend' }) => {
+  const words = text.split(/\s+/).filter(Boolean)
+
+  return (
+    <>
+      {words.map((word, index) => {
+        const isFront = primary === 'frontend' ? index % 2 === 0 : index % 2 === 1
+
+        return (
+          <Box
+            component="span"
+            key={`${word}-${index}`}
+            sx={{
+              fontFamily: isFront ? 'var(--font-display)' : 'var(--font-mono)',
+              fontStyle: isFront ? 'italic' : 'normal',
+              fontWeight: isFront ? 400 : 500,
+              fontSize: isFront ? '1.04em' : '0.82em',
+              letterSpacing: isFront ? '-0.03em' : '-0.01em',
+              display: 'inline-block',
+              mr: '0.22em',
+            }}
+          >
+            {word}
+          </Box>
+        )
+      })}
+    </>
+  )
+}
+
 const Hub = () => {
   const { language } = usePreferences()
   const reduceMotion = useReducedMotion()
   const copy = hubCopy[language]
   const personas = useMemo(() => [tracks.frontend, tracks.backend], [])
-  const projects = useMemo(() => hubProjects(), [])
+  const projects = hubDeck.projects
   const [personaIndex, setPersonaIndex] = useState(0)
   const [glitch, setGlitch] = useState(0)
   const [gallery, setGallery] = useState<GalleryState | null>(null)
@@ -54,6 +88,17 @@ const Hub = () => {
     setGlitch((current) => current + 1)
   }
 
+  const openProject = (index: number) => {
+    const entry = projects[index]
+    if (!entry) return
+    setGallery({
+      title: entry.project.name[language],
+      subtitle: entry.highlight,
+      images: entry.project.images,
+      link: entry.project.links[0],
+    })
+  }
+
   const accent = isBackend ? '#5b8bff' : 'var(--accent)'
   const panelBg = isBackend ? 'rgba(4, 6, 16, 0.86)' : 'var(--glass-bg)'
   const panelBorder = isBackend ? '1px solid rgba(91, 139, 255, 0.28)' : '1px solid var(--line)'
@@ -63,9 +108,10 @@ const Hub = () => {
       <SiteNav track="hub" />
 
       <Box component="main" sx={{ position: 'relative' }}>
-        {/* ---------- hero: alterna front/back ---------- */}
+        {/* ---------- hero: persona alternada, glitch só no texto ---------- */}
         <Box
           component="section"
+          id="home"
           sx={{
             position: 'relative',
             display: 'flex',
@@ -95,7 +141,6 @@ const Hub = () => {
 
           <Box
             key={`hero-${glitch}`}
-            className={`${glitch > 0 && !reduceMotion ? 'glitch-hit' : ''}`}
             sx={{
               position: 'relative',
               zIndex: 2,
@@ -156,23 +201,19 @@ const Hub = () => {
                 component="h1"
                 className={glitch > 0 && !reduceMotion ? 'glitch-text' : undefined}
                 sx={{
-                  fontFamily: isBackend ? 'var(--font-mono)' : 'var(--font-display)',
-                  fontStyle: isBackend ? 'normal' : 'italic',
-                  fontWeight: isBackend ? 500 : 400,
-                  fontSize: isBackend ? 'clamp(1.8rem, 3.2vw, 3rem)' : 'clamp(2.6rem, 5vw, 4.6rem)',
-                  lineHeight: isBackend ? 1.1 : 0.95,
-                  letterSpacing: isBackend ? '-0.03em' : '-0.045em',
-                  maxWidth: 720,
-                  minHeight: { xs: '3.2em', md: '2.6em' },
+                  fontSize: isBackend ? 'clamp(1.9rem, 3.4vw, 3.2rem)' : 'clamp(2.4rem, 4.6vw, 4.2rem)',
+                  lineHeight: 1.12,
+                  maxWidth: 760,
+                  minHeight: { xs: '3em', md: '2.4em' },
                   transition: 'color 400ms ease',
                 }}
               >
-                {persona.heroTitle[language]}
+                <GlitchWords text={persona.heroTitle[language]} primary={isBackend ? 'backend' : 'frontend'} />
               </Typography>
 
               <Typography
                 sx={{
-                  mt: 2.4,
+                  mt: 2.6,
                   maxWidth: '58ch',
                   color: 'text.secondary',
                   fontSize: { xs: '0.9rem', md: '0.98rem' },
@@ -207,7 +248,6 @@ const Hub = () => {
                   component="a"
                   href="#projects"
                   className="mono"
-                  endIcon={<ArrowDownwardRoundedIcon sx={{ fontSize: '1rem !important' }} />}
                   sx={{
                     px: 2.2,
                     py: 1,
@@ -252,7 +292,6 @@ const Hub = () => {
               </Stack>
             </Box>
 
-            {/* foto: moldura muda com a persona */}
             <Box sx={{ position: 'relative', display: 'flex', justifyContent: 'center' }}>
               <Box
                 aria-hidden="true"
@@ -324,147 +363,30 @@ const Hub = () => {
           </Box>
         </Box>
 
-        {/* ---------- todos os projetos ---------- */}
-        <Box component="section" id="projects" className="section-anchor" sx={{ position: 'relative', zIndex: 1, px: { xs: 2.5, md: 6, lg: 9 }, py: { xs: 10, md: 14 } }}>
+        {/* ---------- deck com todos os projetos (mesmo motor das trilhas) ---------- */}
+        <ProjectDeck track="frontend" content={hubDeck} onOpen={openProject} />
+
+        {/* ---------- atalhos + contato ---------- */}
+        <Box component="section" sx={{ position: 'relative', zIndex: 1, px: { xs: 2.5, md: 6, lg: 9 }, pt: { xs: 10, md: 12 }, pb: { xs: 6, md: 8 } }}>
           <Box sx={{ maxWidth: 1440, mx: 'auto' }}>
-            <Typography className="mono" sx={{ color: 'var(--accent)', fontSize: '0.64rem', letterSpacing: '0.16em', textTransform: 'uppercase', mb: 2 }}>
-              {copy.kicker} · {language === 'pt' ? 'todos os projetos' : 'all projects'}
+            <Typography className="mono" sx={{ color: 'var(--accent)', fontSize: '0.62rem', letterSpacing: '0.16em', textTransform: 'uppercase', mb: 1.6 }}>
+              {copy.kicker}
             </Typography>
             <Typography
               component="h2"
               sx={{
                 fontFamily: 'var(--font-display)',
                 fontStyle: 'italic',
-                fontSize: { xs: '2rem', md: '3.4rem' },
-                lineHeight: 0.98,
+                fontSize: { xs: '1.8rem', md: '2.8rem' },
+                lineHeight: 1,
                 letterSpacing: '-0.035em',
-                maxWidth: 820,
+                maxWidth: 760,
               }}
             >
-              {language === 'pt' ? 'Front e back no mesmo lugar' : 'Front and back in one place'}
-            </Typography>
-            <Typography sx={{ mt: 2, maxWidth: '62ch', color: 'text.secondary', fontSize: '0.9rem', fontWeight: 300, lineHeight: 1.7 }}>
-              {language === 'pt'
-                ? `${projects.length} cases das duas trilhas. Cada card diz de onde veio — clique para abrir a galeria.`
-                : `${projects.length} cases from both tracks. Each card tells where it came from — click to open the gallery.`}
+              {language === 'pt' ? 'Dois ambientes, um só engenheiro' : 'Two environments, one engineer'}
             </Typography>
 
-            <Box
-              sx={{
-                mt: { xs: 5, md: 6 },
-                display: 'grid',
-                gap: { xs: 2, md: 2.4 },
-                gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, minmax(0, 1fr))', lg: 'repeat(3, minmax(0, 1fr))' },
-              }}
-            >
-              {projects.map(({ entry, track }, index) => {
-                const cardIsBackend = track === 'backend'
-                const cardAccent = cardIsBackend ? '#5b8bff' : 'var(--accent)'
-
-                return (
-                  <Box
-                    key={`${track}-${entry.project.slug}`}
-                    component={motion.article}
-                    initial={reduceMotion ? false : { opacity: 0, y: 22 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.15 }}
-                    transition={{ duration: 0.5, delay: (index % 3) * 0.05, ease: 'easeOut' }}
-                    className={cardIsBackend ? 'panel mono' : 'liquid-glass'}
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      overflow: 'hidden',
-                      borderRadius: cardIsBackend ? '10px' : '1.3rem',
-                    }}
-                  >
-                    <AutoCarousel
-                      images={[entry.project.cover, ...entry.project.images]}
-                      alt={entry.project.name[language]}
-                      aspectRatio="16 / 9"
-                      onActivate={() =>
-                        setGallery({
-                          title: entry.project.name[language],
-                          subtitle: entry.highlight,
-                          images: entry.project.images,
-                          link: entry.project.links[0],
-                        })
-                      }
-                    />
-
-                    <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', gap: 1, p: 1.9 }}>
-                      <Stack direction="row" alignItems="center" justifyContent="space-between">
-                        <Box
-                          className="mono"
-                          sx={{
-                            px: 0.9,
-                            py: 0.3,
-                            borderRadius: '4px',
-                            border: `1px solid ${cardIsBackend ? 'rgba(91,139,255,0.3)' : 'var(--line)'}`,
-                            color: cardAccent,
-                            fontSize: '0.52rem',
-                            letterSpacing: '0.12em',
-                            textTransform: 'uppercase',
-                          }}
-                        >
-                          {track}
-                        </Box>
-                        <Typography className="mono" sx={{ color: 'text.secondary', fontSize: '0.54rem' }}>
-                          {entry.project.period[language]}
-                        </Typography>
-                      </Stack>
-
-                      <Typography
-                        component="h3"
-                        sx={{
-                          fontFamily: cardIsBackend ? 'var(--font-mono)' : 'var(--font-display)',
-                          fontStyle: cardIsBackend ? 'normal' : 'italic',
-                          fontSize: cardIsBackend ? 'clamp(1.05rem, 1.6vw, 1.3rem)' : 'clamp(1.3rem, 2vw, 1.7rem)',
-                          lineHeight: 1.1,
-                          letterSpacing: '-0.02em',
-                        }}
-                      >
-                        {entry.project.name[language]}
-                      </Typography>
-
-                      <Typography sx={{ color: 'text.secondary', fontSize: '0.76rem', fontWeight: 300, lineHeight: 1.6 }}>
-                        {entry.focus[language]}
-                      </Typography>
-
-                      <Stack direction="row" flexWrap="wrap" gap={0.5} sx={{ mt: 'auto', pt: 1 }}>
-                        {entry.project.technologies.slice(0, 4).map((technology) => (
-                          <Box
-                            key={technology}
-                            className="mono"
-                            sx={{
-                              px: 0.8,
-                              py: 0.25,
-                              borderRadius: '3px',
-                              backgroundColor: 'var(--accent-soft)',
-                              color: 'text.primary',
-                              fontSize: '0.52rem',
-                            }}
-                          >
-                            {technology}
-                          </Box>
-                        ))}
-                      </Stack>
-
-                      <Box
-                        component={Link}
-                        to={`/${track}`}
-                        className="mono"
-                        sx={{ mt: 0.8, color: cardAccent, fontSize: '0.56rem', letterSpacing: '0.06em', textDecoration: 'none' }}
-                      >
-                        {language === 'pt' ? 'ver na trilha' : 'see in track'} ↗
-                      </Box>
-                    </Box>
-                  </Box>
-                )
-              })}
-            </Box>
-
-            {/* atalhos para os ambientes */}
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.2} sx={{ mt: { xs: 5, md: 6 } }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.2} sx={{ mt: 3 }}>
               {[tracks.frontend, tracks.backend].map((item) => (
                 <Button
                   key={item.id}
@@ -487,11 +409,11 @@ const Hub = () => {
               ))}
             </Stack>
 
-            <Typography className="mono" sx={{ mt: 4, color: 'text.secondary', fontSize: '0.62rem', maxWidth: '58ch', lineHeight: 1.7 }}>
+            <Typography className="mono" sx={{ mt: 3.4, color: 'text.secondary', fontSize: '0.62rem', maxWidth: '58ch', lineHeight: 1.7 }}>
               {copy.hint}
             </Typography>
 
-            <Stack direction="row" spacing={2.4} sx={{ mt: 3 }}>
+            <Stack direction="row" spacing={2.4} sx={{ mt: 2.6 }}>
               <Box component="a" href={githubUrl} target="_blank" rel="noopener noreferrer" className="mono" sx={{ color: 'text.secondary', fontSize: '0.64rem', textDecoration: 'none', '&:hover': { color: 'text.primary' } }}>
                 GitHub
               </Box>

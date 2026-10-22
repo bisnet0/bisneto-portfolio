@@ -140,6 +140,7 @@ const DeckCard = ({
 }: DeckCardProps) => {
   const slot = layout.slots[index]
   const timing = layout.timings[index]
+  const cardTrack = entry.origin ?? track
   const t = useTransform(progress, [timing.start, timing.end], [0, 1])
   const eased = useTransform(t, easeOutCubic)
   const x = useTransform(() => (1 - eased.get()) * (slot.deckX - slot.x))
@@ -184,7 +185,8 @@ const DeckCard = ({
         <ProjectCard
           entry={entry}
           index={index}
-          track={track}
+          track={cardTrack}
+          origin={entry.origin}
           landed={typing}
           deckMode={inDeck}
           onOpen={inDeck ? onSelect : onOpen}
@@ -231,6 +233,7 @@ interface DeckRowProps {
 const DeckRow = ({ entry, index, track, layout, progress }: DeckRowProps) => {
   const slot = layout.slots[index]
   const timing = layout.timings[index]
+  const cardTrack = entry.origin ?? track
   const post = postBySlug[entry.project.slug]
   const reveal = useTransform(progress, [timing.end - 0.015, timing.end + 0.02], [0, 1])
   const opacity = useTransform(reveal, (value) => Math.min(1, Math.max(0, value)))
@@ -251,10 +254,10 @@ const DeckRow = ({ entry, index, track, layout, progress }: DeckRowProps) => {
           zIndex: 2,
         }}
       >
-        <PostPanel entry={entry} index={index} track={track} />
+        <PostPanel entry={entry} index={index} track={entry.origin ?? track} />
         {post.comments.length > 0 && (
           <Box sx={{ mt: 1.4 }}>
-            <CommentStorm comments={post.comments} track={track} seed={entry.project.slug} />
+            <CommentStorm comments={post.comments} track={cardTrack} seed={entry.project.slug} />
           </Box>
         )}
       </motion.div>
@@ -297,13 +300,17 @@ const ProjectDeck = ({ track, content, onOpen }: ProjectDeckProps) => {
       const marginX = Math.max(24, Math.min(96, vw * 0.055))
       const gap = Math.max(20, Math.round(vw * 0.02))
       const safeLeft = vw >= 1280 ? 468 : 236
-      const perRow = count > 6 ? Math.ceil(count / 2) : count
-      const rows = Math.ceil(count / perRow)
-      const deckCardW = Math.min(
+      const rows = count <= 6 ? 1 : 2
+      const perRow = Math.ceil(count / rows)
+      const deckRowGapEstimate = 12
+      // Two caps: the row must fit the width, and the whole block must not swallow the stage.
+      const widthCap = Math.min(
         (vw - marginX * 2 - gap * (perRow - 1)) / perRow,
         (vw - safeLeft - 24) / perRow,
         210,
       )
+      const heightCap = ((vh * 0.64) - (rows - 1) * deckRowGapEstimate) / (rows * (cardH / cardW))
+      const deckCardW = Math.min(widthCap, Math.max(112, heightCap))
       const deckScale = deckCardW / cardW
       const deckCardH = cardH * deckScale
       const deckRowGap = 12
@@ -406,12 +413,19 @@ const ProjectDeck = ({ track, content, onOpen }: ProjectDeckProps) => {
                 transition={{ duration: 0.55, ease: 'easeOut' }}
                 sx={{ width: { xs: '100%', md: '78%' }, ml: { md: index % 2 === 0 ? 0 : 'auto' } }}
               >
-                <ProjectCard entry={entry} index={index} track={track} landed={false} onOpen={() => onOpen(index)} />
+                <ProjectCard
+                  entry={entry}
+                  index={index}
+                  track={entry.origin ?? track}
+                  origin={entry.origin}
+                  landed={false}
+                  onOpen={() => onOpen(index)}
+                />
 
                 {post && (
                   <Box sx={{ position: 'relative', mt: 1.6, overflow: 'hidden', borderRadius: '12px' }}>
-                    <PostPanel entry={entry} index={index} track={track} />
-                    <CommentStorm comments={post.comments} track={track} seed={entry.project.slug} compact />
+                    <PostPanel entry={entry} index={index} track={entry.origin ?? track} />
+                    <CommentStorm comments={post.comments} track={entry.origin ?? track} seed={entry.project.slug} compact />
                   </Box>
                 )}
               </Box>
@@ -428,7 +442,7 @@ const ProjectDeck = ({ track, content, onOpen }: ProjectDeckProps) => {
       id="projects"
       ref={sectionRef}
       className="section-anchor"
-      sx={{ position: 'relative', zIndex: 1, height: `calc(100vh + ${count * 95 + Math.round(TAIL * 95)}vh)` }}
+      sx={{ position: 'relative', zIndex: 1, height: `calc(100vh + ${count * (count > 8 ? 78 : 95) + Math.round(TAIL * 95)}vh)` }}
     >
       <Box sx={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}>
         <Box

@@ -8,6 +8,8 @@ export interface TrackProjectEntry {
   /** What this project means inside this specific track. */
   focus: LocalizedText
   highlight: string
+  /** Set on the hub deck so each card keeps the skin of the track it came from. */
+  origin?: 'frontend' | 'backend'
 }
 
 export interface TrackContent {
@@ -45,8 +47,8 @@ const frontend: TrackContent = {
   tagline: { pt: 'Interfaces, motion e design systems', en: 'Interfaces, motion & design systems' },
   kicker: '// frontend',
   heroTitle: {
-    pt: 'Interfaces que respondem ao toque, ao olhar e ao scroll.',
-    en: 'Interfaces that answer to touch, gaze and scroll.',
+    pt: 'Interfaces que respondem ao toque, ao olhar e ao gesto.',
+    en: 'Interfaces that answer to touch, gaze and gesture.',
   },
   typedLines: {
     pt: [
@@ -72,8 +74,8 @@ const frontend: TrackContent = {
   stack: ['React', 'TypeScript', 'MUI', 'Framer Motion', 'Vite', 'A11y WCAG', 'CSS architecture', 'Design tokens'],
   deckKicker: { pt: '// deck de projetos', en: '// project deck' },
   deckTitle: {
-    pt: 'Role o scroll: os cards saem da fila e se alinham em cascata.',
-    en: 'Scroll: the cards leave the row and align into a cascade.',
+    pt: 'Os cards saem da fila e se alinham em cascata.',
+    en: 'The cards leave the row and align into a cascade.',
   },
   deckHint: {
     pt: 'Clique em um card da fila para ir direto ao projeto.',
@@ -177,8 +179,8 @@ const backend: TrackContent = {
   stack: ['Node.js', 'Python', 'SQL Server', 'MongoDB', 'JWT / OAuth', 'Docker', 'Nginx + SSL', 'Pandas · scikit-learn'],
   deckKicker: { pt: '// fila de deploys', en: '// deploy queue' },
   deckTitle: {
-    pt: 'Os serviços saem da fila e entram em produção conforme o scroll.',
-    en: 'Services leave the queue and enter production as you scroll.',
+    pt: 'Os serviços saem da fila e entram em produção.',
+    en: 'Services leave the queue and enter production.',
   },
   deckHint: {
     pt: 'Cada card abre o processo completo: contexto, stack e resultado.',
@@ -284,6 +286,23 @@ export const hubProjects = (): HubProjectEntry[] => {
   })
 
   return items
+}
+
+/** Deck content for the home page: every project once, each one keeping its origin track. */
+export const hubDeck: TrackContent = {
+  ...frontend,
+  id: 'hub',
+  label: 'Frontend + Backend',
+  projects: hubProjects().map(({ entry, track }) => ({ ...entry, origin: track })),
+  deckKicker: { pt: '// todos os projetos', en: '// all projects' },
+  deckTitle: {
+    pt: 'Front e back na mesma fila, cards que se alinham conforme você desce.',
+    en: 'Front and back in the same row, cards that line up as you go down.',
+  },
+  deckHint: {
+    pt: 'Clique em um card da fila para ir direto ao projeto.',
+    en: 'Click a card in the row to jump straight to the project.',
+  },
 }
 
 export const hubCopy = {

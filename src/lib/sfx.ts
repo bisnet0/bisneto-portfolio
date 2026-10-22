@@ -12,6 +12,11 @@ let noise: AudioBuffer | null = null
 let enabled = true
 let lastKeyAt = 0
 let keyCount = 0
+/**
+ * The keyboard only sounds during the very first typing of the session (8 s window).
+ * Everything typed later — hero retypes, card descriptions — stays silent on purpose.
+ */
+let typingWindowEnd = 0
 
 type AudioContextCtor = typeof AudioContext
 
@@ -90,7 +95,7 @@ const hit = (ctx: AudioContext, destination: AudioNode, options: HitOptions) => 
 
 /** Mechanical switch: dry click + low body, no tone. */
 const playKey = () => {
-  if (!enabled) return
+  if (!enabled || performance.now() > typingWindowEnd) return
 
   const nowMs = performance.now()
   if (nowMs - lastKeyAt < 16) return
@@ -169,6 +174,10 @@ export const sfx = {
   click: playClick,
   prime: () => {
     ensureContext()
+  },
+  /** Opens the single typing-sound window for this session. */
+  armTyping: () => {
+    if (typingWindowEnd === 0) typingWindowEnd = performance.now() + 8000
   },
   setEnabled: (value: boolean) => {
     enabled = value

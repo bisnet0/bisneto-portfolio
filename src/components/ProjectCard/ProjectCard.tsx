@@ -18,17 +18,19 @@ interface ProjectCardProps {
   landed: boolean
   /** `true` while the card is still in the deck row: details are visible but not clickable. */
   deckMode?: boolean
+  /** Skin to use — on the hub deck a card keeps the track it came from. */
+  origin?: 'frontend' | 'backend'
   onOpen: () => void
   style?: CSSProperties
 }
 
 const CYCLE_MS = 2400
 
-const ProjectCard = ({ entry, index, track, landed, deckMode = false, onOpen, style }: ProjectCardProps) => {
+const ProjectCard = ({ entry, index, track, landed, deckMode = false, origin, onOpen, style }: ProjectCardProps) => {
   const { language, mode } = usePreferences()
   const copy = siteCopy[language].projects
   const { project, focus, highlight } = entry
-  const isBackend = track === 'backend'
+  const isBackend = (origin ?? track) === 'backend'
   const dark = mode === 'dark'
   const code = String(index + 1).padStart(2, '0')
   const reduceMotion = useReducedMotion()
@@ -114,7 +116,18 @@ const ProjectCard = ({ entry, index, track, landed, deckMode = false, onOpen, st
     <Box
       component="article"
       className={surface.panel}
-      style={style}
+      style={{
+        ...(origin === 'backend'
+          ? ({
+              '--accent': '#5b8bff',
+              '--accent-soft': 'rgba(91, 139, 255, 0.12)',
+              '--line': 'rgba(91, 139, 255, 0.18)',
+              '--line-strong': 'rgba(91, 139, 255, 0.36)',
+              '--surface': 'rgba(8, 12, 28, 0.72)',
+            } as CSSProperties)
+          : null),
+        ...style,
+      }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       sx={{

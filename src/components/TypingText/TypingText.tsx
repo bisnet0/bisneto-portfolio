@@ -45,6 +45,7 @@ const TypingText = ({
       return
     }
 
+    sfx.armTyping()
     let cancelled = false
     let lineIndex = 0
     let charIndex = 0

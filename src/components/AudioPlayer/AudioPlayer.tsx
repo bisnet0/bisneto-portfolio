@@ -7,16 +7,14 @@ import StopRoundedIcon from '@mui/icons-material/StopRounded'
 import VolumeOffRoundedIcon from '@mui/icons-material/VolumeOffRounded'
 import VolumeUpRoundedIcon from '@mui/icons-material/VolumeUpRounded'
 import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import { tracklist } from '../../content/tracklist'
 import { usePreferences } from '../../context/preferences'
 import { sfx } from '../../lib/sfx'
-import { loadYouTubeApi, type YTPlayerHandle } from '../../lib/youtube'
 
-const PLAYLIST_ID = 'PLsVfn9YIFmNBaILsPtU3Vu3KLbsZ4R7oG'
-const START_VIDEO = '950OULymIZQ'
 const COOKIE = 'portfolio-audio'
-const DEFAULT_VOLUME = 16
+const DEFAULT_VOLUME = 18
 
 interface AudioPrefs {
   volume: number
@@ -56,26 +54,27 @@ const formatTime = (seconds: number) => {
 }
 
 /**
- * Floating radio: the YouTube playlist plays from a hidden embed, controlled by a
- * custom bottom bar (play/pause, stop, volume, mute) plus the UI sound toggle.
+ * Floating radio playing the local playlist from public/audio/soft-disco.
+ * Custom controls over a hidden <audio>, so no YouTube embed is involved.
  */
 const AudioPlayer = () => {
   const location = useLocation()
   const { language } = usePreferences()
   const isBackend = location.pathname.startsWith('/backend')
-  const hostRef = useRef<HTMLDivElement | null>(null)
-  const playerRef = useRef<YTPlayerHandle | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
   const initial = useRef<AudioPrefs>(readPrefs())
+  const [index, setIndex] = useState(0)
   const [volume, setVolume] = useState(initial.current.volume)
   const [muted, setMuted] = useState(initial.current.muted)
   const [sfxOn, setSfxOn] = useState(initial.current.sfx)
   const [playing, setPlaying] = useState(false)
-  const [ready, setReady] = useState(false)
   const [blocked, setBlocked] = useState(false)
   const [elapsed, setElapsed] = useState(0)
   const [duration, setDuration] = useState(0)
-  const [title, setTitle] = useState('Dual Air · LonePeakMusic')
-  const wantsPlay = useRef(true)
+  const wantsPlay = useRef(false)
+
+  const track = tracklist[index]
+  const total = tracklist.length
 
   useEffect(() => {
     sfx.setEnabled(initial.current.sfx)
@@ -87,166 +86,96 @@ const AudioPlayer = () => {
   }, [volume, muted, sfxOn])
 
   useEffect(() => {
-    let cancelled = false
-
-    loadYouTubeApi()
-      .then((api) => {
-        if (cancelled || !hostRef.current) return
-
-        playerRef.current = new api.Player(hostRef.current, {
-          height: '90',
-          width: '160',
-          videoId: START_VIDEO,
-          playerVars: {
-            listType: 'playlist',
-            list: PLAYLIST_ID,
-            autoplay: 0,
-            controls: 0,
-            disablekb: 1,
-            modestbranding: 1,
-            rel: 0,
-            playsinline: 1,
-            iv_load_policy: 3,
-            loop: 1,
-          },
-          events: {
-            onReady: (event: { target: YTPlayerHandle }) => {
-              const player = event.target
-              player.setVolume(volume)
-              if (!muted) player.unMute()
-              setReady(true)
-              if (wantsPlay.current) {
-                try {
-                  player.playVideo()
-                } catch {
-                  setBlocked(true)
-                }
-              }
-            },
-            onStateChange: (event: { data: number; target: YTPlayerHandle }) => {
-              const state = event.data
-              setPlaying(state === 1)
-              if (state === 1) {
-                setBlocked(false)
-                const data = event.target.getVideoData?.()
-                if (data?.title) setTitle(data.title)
-              }
-            },
-          },
-        })
-      })
-      .catch(() => setBlocked(true))
-
-    return () => {
-      cancelled = true
-      playerRef.current?.destroy()
-      playerRef.current = null
-    }
-    // Player is created once; preferences are applied through the effects below.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    playerRef.current?.setVolume(volume)
+    const audio = audioRef.current
+    if (!audio) return
+    audio.volume = volume / 100
   }, [volume])
 
   useEffect(() => {
-    if (!playerRef.current || !ready) return
-    if (muted) playerRef.current.mute()
-    else playerRef.current.unMute()
-  }, [muted, ready])
+    const audio = audioRef.current
+    if (!audio) return
+    audio.muted = muted
+  }, [muted])
 
-  /** Reads the real player state — the embed, not our optimism, decides the UI. */
-  const syncState = useCallback(() => {
-    const player = playerRef.current
-    if (!player) return
-    const state = player.getPlayerState()
-    const isPlaying = state === 1
-    setPlaying(isPlaying)
-    if (isPlaying) setBlocked(false)
-    else if (wantsPlay.current) setBlocked(true)
+  const play = useCallback(async () => {
+    const audio = audioRef.current
+    if (!audio) return
+    try {
+      await audio.play()
+      setPlaying(true)
+      setBlocked(false)
+    } catch {
+      setPlaying(false)
+      setBlocked(true)
+    }
   }, [])
 
   const togglePlay = useCallback(() => {
-    const player = playerRef.current
+    const audio = audioRef.current
     sfx.click()
-    if (!player) return
+    if (!audio) return
 
     if (playing) {
-      wantsPlay.current = false
-      player.pauseVideo()
+      audio.pause()
       setPlaying(false)
-    } else {
-      wantsPlay.current = true
-      setBlocked(false)
-      player.playVideo()
-      window.setTimeout(syncState, 900)
+      wantsPlay.current = false
+      return
     }
-  }, [playing, syncState])
 
-  const skip = useCallback((direction: 1 | -1) => {
-    const player = playerRef.current
-    sfx.click()
-    if (!player) return
     wantsPlay.current = true
-    try {
-      if (direction === 1) player.nextVideo()
-      else player.previousVideo()
-      player.playVideo()
-      window.setTimeout(syncState, 900)
-    } catch {
-      setBlocked(true)
-    }
-  }, [syncState])
+    void play()
+  }, [play, playing])
 
   const stop = useCallback(() => {
-    const player = playerRef.current
+    const audio = audioRef.current
     sfx.click()
+    if (!audio) return
     wantsPlay.current = false
-    if (!player) return
-    player.pauseVideo()
-    player.seekTo(0, true)
+    audio.pause()
+    audio.currentTime = 0
     setPlaying(false)
     setElapsed(0)
   }, [])
 
-  useEffect(() => {
-    if (!ready) return
-    const interval = window.setInterval(() => {
-      const player = playerRef.current
-      if (!player) return
-      setElapsed(player.getCurrentTime() ?? 0)
-      setDuration(player.getDuration() ?? 0)
-    }, 800)
+  const skip = useCallback((direction: 1 | -1) => {
+    sfx.click()
+    wantsPlay.current = true
+    setIndex((current) => {
+      if (total === 0) return 0
+      return (current + direction + total) % total
+    })
+  }, [total])
 
-    return () => window.clearInterval(interval)
-  }, [ready])
-
+  // New track: load and, if the user was listening, keep listening.
   useEffect(() => {
-    const resume = () => {
+    const audio = audioRef.current
+    if (!audio || !track) return
+    audio.load()
+    setElapsed(0)
+    if (wantsPlay.current) void play()
+  }, [index, play, track])
+
+  // Browsers block autoplay: unlock on the first gesture.
+  useEffect(() => {
+    const unlock = () => {
       sfx.prime()
       if (!wantsPlay.current || playing) return
-      const player = playerRef.current
-      if (!player) return
-      try {
-        player.playVideo()
-        window.setTimeout(syncState, 900)
-      } catch {
-        setBlocked(true)
-      }
+      void play()
     }
 
-    window.addEventListener('pointerdown', resume, { once: true })
-    window.addEventListener('keydown', resume, { once: true })
+    window.addEventListener('pointerdown', unlock, { once: true })
+    window.addEventListener('keydown', unlock, { once: true })
 
     return () => {
-      window.removeEventListener('pointerdown', resume)
-      window.removeEventListener('keydown', resume)
+      window.removeEventListener('pointerdown', unlock)
+      window.removeEventListener('keydown', unlock)
     }
-  }, [playing, syncState])
+  }, [play, playing])
 
   const progress = duration > 0 ? Math.min(1, elapsed / duration) : 0
-  const surfaceClass = isBackend ? 'panel mono' : 'liquid-glass-strong'
+  const isBackendStyle = isBackend
+  const surfaceClass = isBackendStyle ? 'panel mono' : 'liquid-glass-strong'
+  const label = useMemo(() => (track ? track.title : language === 'pt' ? 'sem faixas' : 'no tracks'), [track, language])
 
   return (
     <Box
@@ -264,11 +193,24 @@ const AudioPlayer = () => {
         pr: 1.2,
         pl: 0.8,
         py: 0.6,
-        borderRadius: isBackend ? '8px' : '9999px',
+        borderRadius: isBackendStyle ? '8px' : '9999px',
         overflow: 'hidden',
       }}
     >
-      <Box ref={hostRef} aria-hidden="true" sx={{ position: 'absolute', width: 1, height: 1, opacity: 0, pointerEvents: 'none', overflow: 'hidden' }} />
+      <Box
+        component="audio"
+        ref={audioRef}
+        src={track?.src}
+        preload="metadata"
+        onTimeUpdate={(event) => setElapsed(event.currentTarget.currentTime)}
+        onLoadedMetadata={(event) => setDuration(event.currentTarget.duration)}
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
+        onEnded={() => {
+          if (total > 0) setIndex((current) => (current + 1) % total)
+        }}
+        sx={{ display: 'none' }}
+      />
 
       <IconButton
         onClick={togglePlay}
@@ -320,14 +262,14 @@ const AudioPlayer = () => {
           min={0}
           max={100}
           value={muted ? 0 : volume}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          onChange={(event) => {
             const next = Number(event.target.value)
             setVolume(next)
             if (next > 0 && muted) setMuted(false)
           }}
           aria-label={language === 'pt' ? 'Volume' : 'Volume'}
           sx={{
-            width: { xs: 54, md: 74 },
+            width: { xs: 54, md: 72 },
             height: 3,
             appearance: 'none',
             borderRadius: 999,
@@ -350,15 +292,13 @@ const AudioPlayer = () => {
           <GraphicEqRoundedIcon sx={{ fontSize: 13, color: 'var(--accent)', opacity: playing ? 1 : 0.4 }} />
           <Typography
             className="mono"
-            sx={{ fontSize: '0.56rem', color: 'var(--text-secondary)', maxWidth: 150, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+            sx={{ fontSize: '0.56rem', color: 'text.secondary', maxWidth: 160, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
           >
-            {blocked
-              ? language === 'pt' ? 'clique para liberar o áudio' : 'click to unlock audio'
-              : title}
+            {blocked && !playing ? (language === 'pt' ? 'clique para liberar o áudio' : 'click to unlock audio') : label}
           </Typography>
         </Stack>
-        <Typography className="mono" sx={{ fontSize: '0.5rem', color: 'var(--text-secondary)', opacity: 0.7, letterSpacing: '0.06em' }}>
-          {formatTime(elapsed)} / {formatTime(duration)} · playlist
+        <Typography className="mono" sx={{ fontSize: '0.5rem', color: 'text.secondary', opacity: 0.7, letterSpacing: '0.06em' }}>
+          {formatTime(elapsed)} / {formatTime(duration)} · {index + 1}/{total || 0}
         </Typography>
       </Box>
 
@@ -374,7 +314,7 @@ const AudioPlayer = () => {
           }}
           aria-pressed={sfxOn}
           aria-label={language === 'pt' ? 'Sons de interface' : 'Interface sounds'}
-          sx={{ width: 28, height: 28, color: sfxOn ? 'var(--accent)' : 'var(--text-secondary)' }}
+          sx={{ width: 28, height: 28, color: sfxOn ? 'var(--accent)' : 'text.secondary' }}
         >
           <GraphicEqRoundedIcon sx={{ fontSize: 15, opacity: sfxOn ? 1 : 0.4 }} />
         </IconButton>
