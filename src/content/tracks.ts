@@ -303,6 +303,14 @@ export const hubDeck: TrackContent = {
     pt: 'Clique em um card da fila para ir direto ao projeto.',
     en: 'Click a card in the row to jump straight to the project.',
   },
+  contactHeading: {
+    pt: 'Tem um projeto que precisa dos dois lados?',
+    en: 'Have a project that needs both sides?',
+  },
+  contactBody: {
+    pt: 'Do app ao serviço: interface, integração, fila e deploy no mesmo pacote — com o time que for preciso.',
+    en: 'From app to service: interface, integration, queue and deploy in the same package — with whatever team it takes.',
+  },
 }
 
 export const hubCopy = {

@@ -3,11 +3,12 @@ import { Box, Button, Stack, Typography } from '@mui/material'
 import { useReducedMotion } from 'framer-motion'
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import Credentials from '../../components/Credentials/Credentials'
 import GalleryDialog from '../../components/GalleryDialog/GalleryDialog'
 import NeuralField from '../../components/NeuralField/NeuralField'
 import ProjectDeck from '../../components/ProjectDeck/ProjectDeck'
 import SiteNav from '../../components/SiteNav/SiteNav'
-import { TrackFooter } from '../../components/TrackContact/TrackContact'
+import TrackContact, { TrackFooter } from '../../components/TrackContact/TrackContact'
 import TrackTheme from '../../components/TrackTheme/TrackTheme'
 import TypingText from '../../components/TypingText/TypingText'
 import { githubUrl, linkedInUrl } from '../../content/portfolio'
@@ -366,6 +367,9 @@ const Hub = () => {
         {/* ---------- deck com todos os projetos (mesmo motor das trilhas) ---------- */}
         <ProjectDeck track="frontend" content={hubDeck} onOpen={openProject} />
 
+        {/* ---------- prêmios, certificados e estudos ---------- */}
+        <Credentials track="hub" />
+
         {/* ---------- atalhos + contato ---------- */}
         <Box component="section" sx={{ position: 'relative', zIndex: 1, px: { xs: 2.5, md: 6, lg: 9 }, pt: { xs: 10, md: 12 }, pb: { xs: 6, md: 8 } }}>
           <Box sx={{ maxWidth: 1440, mx: 'auto' }}>
@@ -424,6 +428,8 @@ const Hub = () => {
           </Box>
         </Box>
       </Box>
+
+      <TrackContact track="hub" content={hubDeck} />
 
       <TrackFooter track="hub" />
 

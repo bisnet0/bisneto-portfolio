@@ -43,6 +43,8 @@ interface AudioPrefs {
   volume: number
   muted: boolean
   sfx: boolean
+  /** True only when the visitor explicitly paused or stopped the radio. */
+  userPaused?: boolean
 }
 
 const readPrefs = (): AudioPrefs => {
@@ -51,7 +53,7 @@ const readPrefs = (): AudioPrefs => {
     .find((entry) => entry.startsWith(`${COOKIE}=`))
     ?.split('=')[1]
 
-  if (!raw) return { volume: DEFAULT_VOLUME, muted: false, sfx: true }
+  if (!raw) return { volume: DEFAULT_VOLUME, muted: false, sfx: true, userPaused: false }
 
   try {
     const parsed = JSON.parse(decodeURIComponent(raw)) as Partial<AudioPrefs>
@@ -59,9 +61,10 @@ const readPrefs = (): AudioPrefs => {
       volume: typeof parsed.volume === 'number' ? Math.min(100, Math.max(0, parsed.volume)) : DEFAULT_VOLUME,
       muted: Boolean(parsed.muted),
       sfx: parsed.sfx !== false,
+      userPaused: Boolean(parsed.userPaused),
     }
   } catch {
-    return { volume: DEFAULT_VOLUME, muted: false, sfx: true }
+    return { volume: DEFAULT_VOLUME, muted: false, sfx: true, userPaused: false }
   }
 }
 
@@ -90,11 +93,13 @@ const AudioPlayer = () => {
   const [volume, setVolume] = useState(initial.current.volume)
   const [muted, setMuted] = useState(initial.current.muted)
   const [sfxOn, setSfxOn] = useState(initial.current.sfx)
+  const [userPaused, setUserPaused] = useState(Boolean(initial.current.userPaused))
   const [playing, setPlaying] = useState(false)
   const [blocked, setBlocked] = useState(false)
   const [elapsed, setElapsed] = useState(0)
   const [duration, setDuration] = useState(0)
-  const wantsPlay = useRef(false)
+  // Autoplay by default: the radio only stays silent if the visitor paused it before.
+  const wantsPlay = useRef(!initial.current.userPaused)
 
   const track = tracklist[index]
   const total = tracklist.length
@@ -104,9 +109,9 @@ const AudioPlayer = () => {
   }, [])
 
   useEffect(() => {
-    writePrefs({ volume, muted, sfx: sfxOn })
+    writePrefs({ volume, muted, sfx: sfxOn, userPaused })
     sfx.setEnabled(sfxOn)
-  }, [volume, muted, sfxOn])
+  }, [volume, muted, sfxOn, userPaused])
 
   useEffect(() => {
     const audio = audioRef.current
@@ -142,10 +147,12 @@ const AudioPlayer = () => {
       audio.pause()
       setPlaying(false)
       wantsPlay.current = false
+      setUserPaused(true)
       return
     }
 
     wantsPlay.current = true
+    setUserPaused(false)
     void play()
   }, [play, playing])
 
@@ -158,6 +165,7 @@ const AudioPlayer = () => {
     audio.currentTime = 0
     setPlaying(false)
     setElapsed(0)
+    setUserPaused(true)
   }, [])
 
   const skip = useCallback((direction: 1 | -1) => {
@@ -178,22 +186,46 @@ const AudioPlayer = () => {
     if (wantsPlay.current) void play()
   }, [index, play, track])
 
-  // Browsers block autoplay: unlock on the first gesture.
+  // Play on load; if the browser blocks it, the first interaction anywhere starts it.
   useEffect(() => {
-    const unlock = () => {
-      sfx.prime()
-      if (!wantsPlay.current || playing) return
-      void play()
+    let cancelled = false
+
+    const stopListening = () => {
+      window.removeEventListener('pointerdown', attempt)
+      window.removeEventListener('keydown', attempt)
+      window.removeEventListener('touchstart', attempt)
+      window.removeEventListener('wheel', attempt)
+      window.removeEventListener('scroll', attempt)
     }
 
-    window.addEventListener('pointerdown', unlock, { once: true })
-    window.addEventListener('keydown', unlock, { once: true })
+    const attempt = () => {
+      const audio = audioRef.current
+      if (cancelled || !audio || audio.paused === false) return
+      if (!wantsPlay.current) return
+      sfx.prime()
+      void audio
+        .play()
+        .then(() => {
+          setPlaying(true)
+          setBlocked(false)
+          stopListening()
+        })
+        .catch(() => setBlocked(true))
+    }
+
+    attempt()
+
+    window.addEventListener('pointerdown', attempt)
+    window.addEventListener('keydown', attempt)
+    window.addEventListener('touchstart', attempt)
+    window.addEventListener('wheel', attempt, { passive: true })
+    window.addEventListener('scroll', attempt, { passive: true })
 
     return () => {
-      window.removeEventListener('pointerdown', unlock)
-      window.removeEventListener('keydown', unlock)
+      cancelled = true
+      stopListening()
     }
-  }, [play, playing])
+  }, [])
 
   const progress = duration > 0 ? Math.min(1, elapsed / duration) : 0
   const isBackendStyle = isBackend

@@ -8,7 +8,7 @@ import AutoCarousel from '../AutoCarousel/AutoCarousel'
 import GalleryDialog from '../GalleryDialog/GalleryDialog'
 
 interface CredentialsProps {
-  track: 'frontend' | 'backend'
+  track: 'frontend' | 'backend' | 'hub'
 }
 
 interface GalleryState {
