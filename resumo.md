@@ -123,6 +123,8 @@ Alturas: seção = `100vh + (n × 95vh + 52vh)`; o card mede a altura real via `
 - **Certificados** — grid de 6 cards com ícone, miniatura e descrição; borda pulsando em azul (`pulse-blue`).
 - **Estudos** — 3 cards de pesquisa aplicada com link para o post.
 
+Os cards (`AwardCard`, `CertificateCard`, `StudyCard`) ficam no escopo do módulo, não dentro de `<Credentials />`: declarados no corpo do componente, o React os tratava como tipos novos a cada render da home (que re-renderiza quando a persona da hero troca) e remontava a grade inteira — a animação de pulse reiniciava e a seção piscava.
+
 Qualquer card abre o `GalleryDialog` compartilhado (imagens, thumbnails, setas e Esc), que também atende aos projetos. Todas as animações são desligadas por `prefers-reduced-motion`.
 
 Todo card com mais de uma imagem usa o `AutoCarousel` (mesmo comportamento dos projetos): crossfade a cada 2,4 s, contador `01/04`, barra de progresso, pausa no hover e botão de pausa fixa; só cicla quando o card está pelo menos 20% visível (`IntersectionObserver`).
