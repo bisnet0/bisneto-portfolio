@@ -57,7 +57,9 @@ const WindowBackdrop = () => {
           spacing={1.2}
           sx={{
             height: 34,
-            px: 1.6,
+            // O logo da navbar é fixo à esquerda: os dots e o path começam depois dele.
+            pl: { xs: '78px', md: '92px' },
+            pr: 1.6,
             borderBottom: '1px solid var(--line)',
             backgroundColor: dark ? 'rgba(6,9,22,0.55)' : 'rgba(255,255,255,0.55)',
           }}

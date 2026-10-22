@@ -10,6 +10,8 @@ export interface ProjectLink {
 
 export interface Project {
   slug: string
+  /** ISO date used to keep the portfolio in chronological order. */
+  date: string
   name: LocalizedText
   period: LocalizedText
   description: LocalizedText
@@ -180,7 +182,7 @@ export const siteCopy = {
       heading: 'Have an interesting challenge?',
       description: 'I am always open to conversations about digital products, software engineering and ideas that deserve to come to life.',
       email: 'Send an email',
-      cv: 'Download résumé',
+      cv: 'Download resume',
       social: 'Or find me online',
     },
     footer: {
@@ -193,6 +195,7 @@ export const siteCopy = {
 export const projects: Project[] = [
   {
     slug: 'polos',
+    date: '2025-01-22',
     name: { pt: 'Gestão de Polos', en: 'Campus Management' },
     period: { pt: '17 a 29 jan. 2025', en: 'Jan 17–29, 2025' },
     description: {
@@ -200,15 +203,16 @@ export const projects: Project[] = [
       en: 'A responsive application that centralizes data from the TOTVS RM ERP and delivers real-time information to UNEF campuses.',
     },
     technologies: ['React', 'Node.js', 'SQL Server', 'MongoDB', 'JWT'],
-    images: ['/projects/polo.png', '/projects/Polo1.png', '/projects/polo2.png', '/projects/polo3.png', '/projects/polo4.png', '/projects/polo5.png', '/projects/polo6.png', '/projects/Polo7.png', '/projects/Polo8.png', '/projects/Polo9.png'],
-    cover: '/projects/covers/polos.webp',
+    images: ['/projects/polos/polo.webp', '/projects/polos/Polo1.webp', '/projects/polos/polo2.webp', '/projects/polos/polo3.webp', '/projects/polos/polo4.webp', '/projects/polos/polo5.webp', '/projects/polos/polo6.webp', '/projects/polos/Polo7.webp', '/projects/polos/Polo8.webp', '/projects/polos/Polo9.webp'],
+    cover: '/projects/polos/cover.webp',
     links: [
       { label: 'LinkedIn', url: 'https://www.linkedin.com/posts/bisnet0_react-nodejs-desenvolvimentoweb-activity-7287959265695166465-Gum8', type: 'case' },
-      { label: 'polos.unef.edu.br', url: 'https://polos.unef.edu.br/', type: 'website' },
+      { label: 'POLOS', url: 'https://polos.unef.edu.br/', type: 'website' },
     ],
   },
   {
     slug: 'tutorials',
+    date: '2024-10-03',
     name: { pt: 'Tutoriais de Medicina e Escola Nobre', en: 'Medicine & Nobre School Tutorials' },
     period: { pt: '3 out. a 18 dez. 2024', en: 'Oct 3–Dec 18, 2024' },
     description: {
@@ -216,8 +220,8 @@ export const projects: Project[] = [
       en: 'A complete UI/UX redesign for tutorial portals, delivering a responsive experience across smartphones, tablets and desktop.',
     },
     technologies: ['JavaScript', 'HTML5', 'CSS3', 'Responsive UI'],
-    images: ['/projects/tutorial.png', '/projects/Tutorial1.png', '/projects/tutorial2.png', '/projects/tutorial3.png', '/projects/tutorial4.png', '/projects/tutorial5.png', '/projects/tutorial6.png', '/projects/tutorial7.png', '/projects/tutorial8.png', '/projects/Tutorial9.png', '/projects/Tutorial10.png', '/projects/Tutorial11.png'],
-    cover: '/projects/covers/tutorials.webp',
+    images: ['/projects/tutorials/tutorial.webp', '/projects/tutorials/Tutorial1.webp', '/projects/tutorials/tutorial2.webp', '/projects/tutorials/tutorial3.webp', '/projects/tutorials/tutorial4.webp', '/projects/tutorials/tutorial5.webp', '/projects/tutorials/tutorial6.webp', '/projects/tutorials/tutorial7.webp', '/projects/tutorials/tutorial8.webp', '/projects/tutorials/Tutorial9.webp', '/projects/tutorials/Tutorial10.webp', '/projects/tutorials/Tutorial11.webp'],
+    cover: '/projects/tutorials/cover.webp',
     links: [
       { label: 'LinkedIn', url: 'https://www.linkedin.com/posts/bisnet0_frontend-js-css-activity-7247601763212513281-KuBA', type: 'case' },
       { label: 'UNIFAN MED', url: 'https://med.unifan.net.br/tutorial-professor', type: 'website' },
@@ -229,6 +233,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'renovame',
+    date: '2024-10-16',
     name: { pt: 'Igreja Renova-me', en: 'Renova-me Church' },
     period: { pt: '9 a 16 out. 2024', en: 'Oct 9–16, 2024' },
     description: {
@@ -236,8 +241,8 @@ export const projects: Project[] = [
       en: 'A pro bono institutional website created for a new community, with a fluid and fully responsive experience.',
     },
     technologies: ['JavaScript', 'HTML5', 'CSS3'],
-    images: ['/projects/Renovame.png', '/projects/Renovame1.png', '/projects/Renovame2.png', '/projects/Renovame3.png', '/projects/Renovame4.png', '/projects/Renovame5.png', '/projects/Renovame6.png', '/projects/Renovame7.png', '/projects/Renovame8.png'],
-    cover: '/projects/covers/renovame.webp',
+    images: ['/projects/renovame/Renovame.webp', '/projects/renovame/Renovame1.webp', '/projects/renovame/Renovame2.webp', '/projects/renovame/Renovame3.webp', '/projects/renovame/Renovame4.webp', '/projects/renovame/Renovame5.webp', '/projects/renovame/Renovame6.webp', '/projects/renovame/Renovame7.webp', '/projects/renovame/Renovame8.webp'],
+    cover: '/projects/renovame/cover.webp',
     links: [
       { label: 'renovamechurch.com.br', url: 'https://renovamechurch.com.br/', type: 'website' },
       { label: 'GitHub', url: 'https://github.com/bisnet0/renova-me', type: 'code' },
@@ -245,6 +250,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'nobrehub',
+    date: '2024-11-19',
     name: { pt: 'Hub de Eventos Nobre', en: 'Nobre Events Hub' },
     period: { pt: '14 ago. a 2 set. 2024', en: 'Aug 14–Sep 2, 2024' },
     description: {
@@ -252,14 +258,15 @@ export const projects: Project[] = [
       en: 'A centralized hub for free and paid events, featuring Mercado Pago, information management and certificate generation.',
     },
     technologies: ['Node.js', 'Python', 'Mercado Pago API', 'JavaScript'],
-    images: ['/projects/Nobrehub.png', '/projects/Nobrehub1.png', '/projects/Nobrehub2.png', '/projects/Nobrehub3.png', '/projects/Nobrehub4.png'],
-    cover: '/projects/covers/events.webp',
+    images: ['/projects/nobrehub/Nobrehub.webp', '/projects/nobrehub/Nobrehub1.webp', '/projects/nobrehub/Nobrehub2.webp', '/projects/nobrehub/Nobrehub3.webp', '/projects/nobrehub/Nobrehub4.webp'],
+    cover: '/projects/nobrehub/cover.webp',
     links: [
       { label: 'LinkedIn', url: 'https://www.linkedin.com/posts/bisnet0_development-system-backend-activity-7264752938651185152-9vcq', type: 'case' },
     ],
   },
   {
     slug: 'biometria',
+    date: '2024-08-07',
     name: { pt: 'Biometria Facial UNEF e UNIFAN', en: 'UNEF & UNIFAN Facial Biometrics' },
     period: { pt: '29 jul. a 6 ago. 2024', en: 'Jul 29–Aug 6, 2024' },
     description: {
@@ -267,8 +274,8 @@ export const projects: Project[] = [
       en: 'An integration solution for student and employee photos, automating access authorization across both institutions.',
     },
     technologies: ['Python', 'Node.js', 'SQL Server', 'JavaScript'],
-    images: ['/projects/Biometria.png', '/projects/Biometria1.png', '/projects/Biometria2.png', '/projects/Biometria3.png', '/projects/Biometria4.png', '/projects/Biometria5.png', '/projects/Biometria6.png', '/projects/Biometria7.png', '/projects/Biometria8.png', '/projects/Biometria9.png', '/projects/Biometria10.png', '/projects/Biometria11.png'],
-    cover: '/projects/covers/biometrics.webp',
+    images: ['/projects/biometria/Biometria.webp', '/projects/biometria/Biometria1.webp', '/projects/biometria/Biometria2.webp', '/projects/biometria/Biometria3.webp', '/projects/biometria/Biometria4.webp', '/projects/biometria/Biometria5.webp', '/projects/biometria/Biometria6.webp', '/projects/biometria/Biometria7.webp', '/projects/biometria/Biometria8.webp', '/projects/biometria/Biometria9.webp', '/projects/biometria/Biometria10.webp', '/projects/biometria/Biometria11.webp'],
+    cover: '/projects/biometria/cover.webp',
     links: [
       { label: 'LinkedIn', url: 'https://www.linkedin.com/posts/bisnet0_frontend-webdeb-javascript-activity-7227072365472448514-m9m7', type: 'case' },
       { label: 'UNIFAN', url: 'https://biometria.unifan.net.br/', type: 'website' },
@@ -277,6 +284,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'aniversariantes',
+    date: '2024-07-20',
     name: { pt: 'Aniversariantes do Mês', en: 'Monthly Birthdays' },
     period: { pt: '26 jun. a 23 jul. 2024', en: 'Jun 26–Jul 23, 2024' },
     description: {
@@ -284,14 +292,15 @@ export const projects: Project[] = [
       en: 'An internal application that organizes Grupo Nobre birthdays and creates a special experience for the employee of the day.',
     },
     technologies: ['Node.js', 'SQL Server', 'JavaScript', 'HTML5', 'CSS3'],
-    images: ['/projects/Aniversariantes.png', '/projects/Aniversariantes1.png', '/projects/Aniversariantes2.png', '/projects/Aniversariantes3.png', '/projects/Aniversariantes4.png'],
-    cover: '/projects/covers/birthdays.webp',
+    images: ['/projects/aniversariantes/Aniversariantes.webp', '/projects/aniversariantes/Aniversariantes1.webp', '/projects/aniversariantes/Aniversariantes2.webp', '/projects/aniversariantes/Aniversariantes3.webp', '/projects/aniversariantes/Aniversariantes4.webp'],
+    cover: '/projects/aniversariantes/cover.webp',
     links: [
       { label: 'LinkedIn', url: 'https://www.linkedin.com/posts/bisnet0_webdev-desenvolvimentoweb-nodejs-activity-7220542341504245760-yEhG', type: 'case' },
     ],
   },
   {
     slug: 'customizer',
+    date: '2024-06-28',
     name: { pt: 'Customizador de Portal', en: 'Portal Customizer' },
     period: { pt: '16 a 28 jun. 2024', en: 'Jun 16–28, 2024' },
     description: {
@@ -299,8 +308,8 @@ export const projects: Project[] = [
       en: 'A configurable Python tool that automates page replacement across Grupo Nobre academic portals.',
     },
     technologies: ['Python', 'Automation', 'HTML5', 'CSS3'],
-    images: ['/projects/replaceM.png', '/projects/replaceM1.png', '/projects/replaceM2.png'],
-    cover: '/projects/covers/customizer.webp',
+    images: ['/projects/customizer/replaceM.webp', '/projects/customizer/replaceM1.webp', '/projects/customizer/replaceM2.webp'],
+    cover: '/projects/customizer/cover.webp',
     links: [
       { label: 'LinkedIn', url: 'https://www.linkedin.com/posts/bisnet0_boa-tarde-rede-tudo-bem-com-voc%C3%AAs-bom-activity-7209987530543296512-V1ar', type: 'case' },
       { label: 'GitHub', url: 'https://github.com/bisnet0/Replace_RM_Folder', type: 'code' },
@@ -308,6 +317,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'tax-analysis',
+    date: '2024-06-19',
     name: { pt: 'Análise Preditiva Tributária', en: 'Predictive Tax Analysis' },
     period: { pt: '18 a 19 jun. 2024', en: 'Jun 18–19, 2024' },
     description: {
@@ -315,14 +325,15 @@ export const projects: Project[] = [
       en: 'A predictive analysis of Brazilian import and export taxes using historical data from 2000 to 2024.',
     },
     technologies: ['Python', 'Pandas', 'Scikit-learn', 'Matplotlib', 'NumPy'],
-    images: ['/projects/APreditiva.png', '/projects/APreditiva1.png', '/projects/APreditiva2.png', '/projects/APreditiva3.png', '/projects/APreditiva4.png'],
-    cover: '/projects/covers/tax-analysis.webp',
+    images: ['/projects/tax-analysis/APreditiva.webp', '/projects/tax-analysis/APreditiva1.webp', '/projects/tax-analysis/APreditiva2.webp', '/projects/tax-analysis/APreditiva3.webp', '/projects/tax-analysis/APreditiva4.webp'],
+    cover: '/projects/tax-analysis/cover.webp',
     links: [
       { label: 'GitHub', url: 'https://github.com/bisnet0/DataScience', type: 'code' },
     ],
   },
   {
     slug: 'portal-do-cliente',
+    date: '2026-10-09',
     name: { pt: 'Portal do Cliente (ContaGou)', en: 'Client Portal (ContaGou)' },
     period: { pt: 'app em produção · out. 2026', en: 'live app · Oct 2026' },
     description: {
@@ -331,13 +342,14 @@ export const projects: Project[] = [
     },
     technologies: ['React Native', 'Expo', 'TypeScript', 'Node.js', 'MongoDB', 'Redis', 'Socket.IO'],
     images: ['/projects/portal-do-cliente/01.webp', '/projects/portal-do-cliente/02.webp', '/projects/portal-do-cliente/03.webp', '/projects/portal-do-cliente/04.webp', '/projects/portal-do-cliente/05.webp', '/projects/portal-do-cliente/06.webp', '/projects/portal-do-cliente/07.webp'],
-    cover: '/projects/covers/portal-do-cliente.webp',
+    cover: '/projects/portal-do-cliente/cover.webp',
     links: [
       { label: 'LinkedIn', url: 'https://www.linkedin.com/posts/bisnet0_reactnative-expo-nodejs-ugcPost-7514118462856933376-4hoB/', type: 'case' },
     ],
   },
   {
     slug: 'riftshield',
+    date: '2026-07-23',
     name: { pt: 'RiftShield', en: 'RiftShield' },
     period: { pt: 'Hackathon FIAP Software Security · jul. 2026', en: 'FIAP Software Security Hackathon · Jul 2026' },
     description: {
@@ -346,13 +358,14 @@ export const projects: Project[] = [
     },
     technologies: ['FastAPI', 'YOLOv8', 'LangGraph', 'RAG · FAISS', 'React 19', 'Chakra UI', 'MongoDB', 'Docker'],
     images: ['/projects/riftshield/01.webp', '/projects/riftshield/02.webp', '/projects/riftshield/03.webp', '/projects/riftshield/04.webp', '/projects/riftshield/05.webp', '/projects/riftshield/06.webp', '/projects/riftshield/07.webp', '/projects/riftshield/08.webp'],
-    cover: '/projects/covers/riftshield.webp',
+    cover: '/projects/riftshield/cover.webp',
     links: [
       { label: 'LinkedIn', url: 'https://www.linkedin.com/posts/bisnet0_cybersecurity-yolo-langgraph-ugcPost-7486203782599524354-6pLZ/', type: 'case' },
     ],
   },
   {
     slug: 'episcope',
+    date: '2026-05-19',
     name: { pt: 'EpiScope', en: 'EpiScope' },
     period: { pt: 'Pós-graduação em IA · 2025–2026', en: 'AI postgraduate · 2025–2026' },
     description: {
@@ -361,7 +374,7 @@ export const projects: Project[] = [
     },
     technologies: ['Python', 'Flask', 'GraphQL', 'Cartesi Rollups', 'Blockchain', 'scikit-learn', 'Gemini'],
     images: ['/projects/episcope/01.webp', '/projects/episcope/02.webp', '/projects/episcope/03.webp', '/projects/episcope/04.webp', '/projects/episcope/05.webp', '/projects/episcope/06.webp', '/projects/episcope/07.webp', '/projects/episcope/08.webp'],
-    cover: '/projects/covers/episcope.webp',
+    cover: '/projects/episcope/cover.webp',
     links: [
       { label: 'LinkedIn', url: 'https://www.linkedin.com/posts/bisnet0_artificialintelligence-machinelearning-web3-ugcPost-7462300956521590784-Z34B/', type: 'case' },
       { label: 'GitHub', url: 'https://github.com/bisnet0/EpiScope-dapp', type: 'code' },

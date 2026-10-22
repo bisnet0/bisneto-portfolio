@@ -68,7 +68,7 @@ src/
 public/
 ├─ me/nocanva.png|webp            # retrato (webp 35 KB usado no hero)
 ├─ textures/window-plate.webp     # textura do fundo backend
-├─ projects/*.png + covers/*.webp # capturas e capas dos 8 projetos
+├─ projects/<slug>/              # capas e capturas de cada projeto (WebP, sem arquivos soltos)
 └─ CNAME, .nojekyll
 refs/                             # vídeos e referências de design (fora do deploy, gitignored)
 ```
@@ -108,6 +108,7 @@ Alturas: seção = `100vh + (n × 95vh + 52vh)`; o card mede a altura real via `
 ## Conteúdo
 
 - 11 cases reais em `portfolio.ts`, cada um com `slug`, período, descrição, stack, galeria e links.
+- Cada projeto tem um campo `date` (ISO) em `portfolio.ts`; `tracks.ts` ordena as duas trilhas e a home com `newestFirst` — o deck segue a ordem cronológica real (mais recente primeiro).
 - `tracks.ts` define **quais** projetos aparecem em cada ambiente, com uma linha de foco própria (`focus`) e um selo (`highlight`):
   - Frontend (6): Gestão de Polos, Tutoriais Medicina/Escola Nobre, Igreja Renova-me, Customizador de Portal, Portal do Cliente (app white-label), RiftShield (dashboard React 19).
   - Backend (8): Biometria Facial, Hub de Eventos Nobre, Aniversariantes do Mês, Análise Preditiva Tributária, Gestão de Polos (serviço), Portal do Cliente (filas/Redis/Socket.IO), RiftShield (FastAPI/YOLOv8/LangGraph), EpiScope (ML + Cartesi).
@@ -135,6 +136,7 @@ Todo card com mais de uma imagem usa o `AutoCarousel` (mesmo comportamento dos p
 - **Cursor personalizado:** retículo (anel 1 px + mira em cruz + ponto) que cresce para 60 px em elementos interativos, encolhe no clique e dá glitches (jitter + fatias fantasmas) ao entrar/sair de controles, a cada clique e em intervalos aleatórios. `cursor: none !important` é aplicado em `html[data-custom-cursor='on']`, `body.custom-cursor-on` e todos os descendentes; desativado em touch e com reduced motion.
 - **Som:** `sfx.ts` gera tudo por WebAudio (nenhum arquivo de áudio no bundle). O typing é **só ruído filtrado**, sem oscilador: clique plástico (bandpass 2,4–3,7 kHz), corpo seco (lowpass 260–510 Hz) e um tick de topo (highpass 5,2 kHz), com variação por tecla e teclas mais graves a cada 11. O som de digitação toca **apenas uma vez por sessão** (janela de 8 s aberta pelo primeiro `TypingText`); retypes do hero e descrições de card ficam silenciosos. Botão de ondas no player liga/desliga.
 - **Rádio local:** player flutuante sobre um `<audio>` invisível tocando `src/assets/audio/soft-disco/*.mp3` (18% de volume por padrão), com play/pause, faixa anterior, parar, próxima faixa, volume, mute e sons de interface — preferências no cookie `portfolio-audio`.
+- **Cor do player:** o player vive fora do `TrackTheme`, então tem o próprio `ThemeProvider` (modo + trilha da rota). Antes herdava o tema claro padrão e ficava com texto preto no dark.
 - **Autoplay:** a rádio tenta tocar já no carregamento e, se o navegador bloquear (política de autoplay), começa sozinha no primeiro clique/tecla/scroll em qualquer lugar da página — sem precisar acertar o play. Só fica pausada se o visitante pausou/parou, estado que persiste no cookie `userPaused`.
 - **Playlist sem codegen:** `AudioPlayer` descobre as faixas com `import.meta.glob('../../assets/audio/soft-disco/*.{mp3,m4a,ogg,wav,aac,flac}', { eager: true, query: '?url', import: 'default' })` e deriva o título do caminho (remove `_spotdown.org`, troca `_` por espaço). Novos arquivos na pasta entram no próximo `dev`/`build` — não existe mais arquivo gerado (a versão antiga escrevia `src/content/tracklist.ts` no `predev` e causava tela branca quando o Vite servia o módulo durante a escrita).
 - **Rede neural global:** `NeuralField` é montado uma vez por página (`fixed`, atrás de tudo) em `/frontend` e `/backend`; o ponteiro empurra os nós em qualquer seção, não só no hero.
@@ -191,7 +193,7 @@ npm run deploy   # Build + publicação em gh-pages
 ## Pendências conhecidas
 
 - Code splitting: o bundle principal passa de 500 kB (aviso do Vite). Candidato natural: separar MUI e as rotas com `React.lazy`.
-- Imagens da galeria antiga em `public/projects/*.png` somam ~40 MB; converter para WebP reduziria o deploy (as novas pastas já são WebP).
+- As 61 capturas antigas em PNG foram convertidas para WebP e movidas para `public/projects/<slug>/` (pasta caiu de ~46 MB para 5,2 MB); o `dist` ficou em ~126 MB, quase tudo áudio.
 - O LinkedIn limita o guest view e às vezes exige login: em uma segunda passada os comentários dos 3 posts novos foram capturados, mas rodadas repetidas podem ser bloqueadas.
 - A seção pessoal (posts, imagens e o vídeo antigo) ainda não existe; os vídeos estão em `refs/video/` e `refs/` está no `.gitignore`.
 - Os comentários são reais, mas o LinkedIn limita o guest view (ex.: 10 de 22). Para capturar a thread inteira é preciso estar logado; os dados vivem em `src/content/postComments.ts` e podem ser completados manualmente.

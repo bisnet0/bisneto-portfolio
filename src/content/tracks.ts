@@ -41,6 +41,9 @@ const bySlug = (slug: string, focus: LocalizedText, highlight: string): TrackPro
   return { project, focus, highlight }
 }
 
+/** Newest first — the deck follows the real post dates. */
+const newestFirst = (a: TrackProjectEntry, b: TrackProjectEntry) => b.project.date.localeCompare(a.project.date)
+
 const frontend: TrackContent = {
   id: 'frontend',
   label: 'Frontend',
@@ -141,7 +144,7 @@ const frontend: TrackContent = {
       },
       'React 19 · Chakra',
     ),
-  ],
+  ].sort(newestFirst),
 }
 
 const backend: TrackContent = {
@@ -262,7 +265,7 @@ const backend: TrackContent = {
       },
       'ML · Web3',
     ),
-  ],
+  ].sort(newestFirst),
 }
 
 export const tracks: Record<Exclude<TrackId, 'hub'>, TrackContent> = { frontend, backend }
@@ -285,7 +288,7 @@ export const hubProjects = (): HubProjectEntry[] => {
     })
   })
 
-  return items
+  return items.sort((a, b) => b.entry.project.date.localeCompare(a.entry.project.date))
 }
 
 /** Deck content for the home page: every project once, each one keeping its origin track. */

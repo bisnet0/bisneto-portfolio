@@ -7,6 +7,7 @@ import StopRoundedIcon from '@mui/icons-material/StopRounded'
 import VolumeOffRoundedIcon from '@mui/icons-material/VolumeOffRounded'
 import VolumeUpRoundedIcon from '@mui/icons-material/VolumeUpRounded'
 import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material'
+import { ThemeProvider } from '@mui/material/styles'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 /**
@@ -35,6 +36,7 @@ const tracklist = Object.entries(AUDIO_FILES)
   .sort((a, b) => a.path.localeCompare(b.path, 'pt-BR'))
 import { usePreferences } from '../../context/preferences'
 import { sfx } from '../../lib/sfx'
+import createAppTheme from '../../theme'
 
 const COOKIE = 'portfolio-audio'
 const DEFAULT_VOLUME = 18
@@ -85,8 +87,12 @@ const formatTime = (seconds: number) => {
  */
 const AudioPlayer = () => {
   const location = useLocation()
-  const { language } = usePreferences()
+  const { language, mode } = usePreferences()
   const isBackend = location.pathname.startsWith('/backend')
+  const trackId = isBackend ? 'backend' : location.pathname.startsWith('/frontend') ? 'frontend' : 'hub'
+  // The player lives outside the page's TrackTheme, so it needs its own provider —
+  // otherwise MUI falls back to the default light palette (black text in dark mode).
+  const theme = useMemo(() => createAppTheme(mode, trackId), [mode, trackId])
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const initial = useRef<AudioPrefs>(readPrefs())
   const [index, setIndex] = useState(0)
@@ -233,6 +239,7 @@ const AudioPlayer = () => {
   const label = useMemo(() => (track ? track.title : language === 'pt' ? 'sem faixas' : 'no tracks'), [track, language])
 
   return (
+    <ThemeProvider theme={theme}>
     <Box
       className={surfaceClass}
       role="group"
@@ -389,6 +396,7 @@ const AudioPlayer = () => {
         }}
       />
     </Box>
+    </ThemeProvider>
   )
 }
 
